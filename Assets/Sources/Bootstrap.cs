@@ -17,5 +17,10 @@ namespace RustedGames
 		{
 			gameSystems.Execute();
 		}
+
+		private void OnApplicationQuit()
+		{
+			gameSystems.TearDown();
+		}
 	}
 }
