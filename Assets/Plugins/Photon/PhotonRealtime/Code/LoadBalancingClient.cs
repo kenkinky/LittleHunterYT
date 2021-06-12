@@ -853,7 +853,7 @@ namespace Photon.Realtime
         {
             if (this.LoadBalancingPeer.PeerState != PeerStateValue.Disconnected)
             {
-                Debug.LogWarning("ConnectUsingSettings() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
+                this.DebugReturn(DebugLevel.WARNING, "ConnectUsingSettings() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
                 return false;
             }
 
@@ -950,7 +950,7 @@ namespace Photon.Realtime
         {
             if (this.LoadBalancingPeer.PeerState != PeerStateValue.Disconnected)
             {
-                Debug.LogWarning("ConnectToMasterServer() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
+                this.DebugReturn(DebugLevel.WARNING, "ConnectToMasterServer() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
                 return false;
             }
 
@@ -986,7 +986,7 @@ namespace Photon.Realtime
         {
             if (this.LoadBalancingPeer.PeerState != PeerStateValue.Disconnected)
             {
-                Debug.LogWarning("ConnectToNameServer() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
+                this.DebugReturn(DebugLevel.WARNING, "ConnectToNameServer() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
                 return false;
             }
 
@@ -1194,10 +1194,10 @@ namespace Photon.Realtime
         {
             if (this.LoadBalancingPeer.PeerState != PeerStateValue.Disconnected)
             {
-                Debug.LogWarning("ReconnectToMaster() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
+                this.DebugReturn(DebugLevel.WARNING, "ReconnectToMaster() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
                 return false;
             }
-            
+
             if (string.IsNullOrEmpty(this.MasterServerAddress))
             {
                 this.DebugReturn(DebugLevel.WARNING, "ReconnectToMaster() failed. MasterServerAddress is null or empty.");
@@ -1231,7 +1231,7 @@ namespace Photon.Realtime
         {
             if (this.LoadBalancingPeer.PeerState != PeerStateValue.Disconnected)
             {
-                Debug.LogWarning("ReconnectAndRejoin() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
+                this.DebugReturn(DebugLevel.WARNING, "ReconnectAndRejoin() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
                 return false;
             }
 
@@ -1349,6 +1349,7 @@ namespace Photon.Realtime
             if (this.IsUsingNameServer && this.Server != ServerConnection.NameServer && (this.AuthValues == null || this.AuthValues.Token == null))
             {
                 this.DebugReturn(DebugLevel.ERROR, "Authenticate without Token is only allowed on Name Server. Connecting to: " + this.Server + " on: " + this.CurrentServerAddress + ". State: " + this.State);
+                return false;
             }
 
             if (this.AuthMode == AuthModeOption.Auth)

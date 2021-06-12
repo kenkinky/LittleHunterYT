@@ -569,18 +569,33 @@ namespace Photon.Pun
             }
         }
 
+        /// <summary>
+        /// Will find IPunObservable components on this GameObject and nested children and add them to the ObservedComponents list.
+        /// </summary>
+        /// <remarks>
+        /// This is called via PhotonView.Awake(), which in turn is called immediately by the engine's AddComponent method.
+        /// 
+        /// Changing the ObservedComponents of a PhotonView at runtime can be problematic, if other clients are not also
+        /// updating their list.
+        /// </remarks>
+        /// <param name="force">If true, FindObservables will work as if observableSearch is AutoFindActive.</param>
         public void FindObservables(bool force = false)
         {
             if (!force && this.observableSearch == ObservableSearch.Manual)
+            {
                 return;
+            }
 
             if (this.ObservedComponents == null)
+            {
                 this.ObservedComponents = new List<Component>();
-
+            }
+            else
+            {
             this.ObservedComponents.Clear();
+            }
 
             this.transform.GetNestedComponentsInChildren<Component, IPunObservable, PhotonView>(force || this.observableSearch == ObservableSearch.AutoFindAll, this.ObservedComponents);
-
         }
 
 
