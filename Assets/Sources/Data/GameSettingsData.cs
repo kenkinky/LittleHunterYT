@@ -27,6 +27,8 @@ namespace RustedGames
 		public class PlayerSettings
 		{
 			public GameObject PlayerPrefab;
+            public float MovementSpeed;
+            public float RotationSpeed;
 		}
 	}
 }
