@@ -16,7 +16,10 @@ namespace RustedGames
 		[Header("Player Settings"), Space(2f)]
 		public PlayerSettings PlayerConfig;
 
-		[Serializable]
+        [Header("Camera Settings"), Space(2f)]
+        public CameraSettings CameraConfig;
+
+        [Serializable]
 		public class NetworkPreset
 		{
 			public int MaxNumberOfPlayers;
@@ -30,5 +33,15 @@ namespace RustedGames
             public float MovementSpeed;
             public float RotationSpeed;
 		}
+
+        [Serializable]
+        public class CameraSettings
+        {
+            public float CameraLookSpeed;
+            public float CameraPivotSpeed;
+            public float CameraSmoothTime;
+            public float MinimumPivotAngle;
+            public float MaximumPivotAngle;
+        }
 	}
 }
