@@ -1,4 +1,5 @@
 ﻿using Entitas;
+using Entitas.Unity;
 using UnityEngine;
 
 namespace RustedGames
@@ -33,6 +34,12 @@ namespace RustedGames
             localPlayer.AddMovementSpeed(_settingsContext.gameSettings.value.PlayerConfig.MovementSpeed);
             localPlayer.AddRotationSpeed(_settingsContext.gameSettings.value.PlayerConfig.RotationSpeed);
             localPlayer.AddPhotonView(playerView.GetComponent<Photon.Pun.PhotonView>());
+
+            localPlayer.AddMoveDirection(Vector3.zero);
+            localPlayer.AddAnimatorView(playerView.GetComponentInChildren<Animator>());
+            localPlayer.isMoving = false;
+
+            playerView.Link(localPlayer);
 		}		
 	}
 }

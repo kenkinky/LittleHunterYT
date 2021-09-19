@@ -76,3 +76,6 @@ Jenny.zip.meta
 # Crashlytics generated file
 crashlytics-build.properties
 /Assets/Plugins/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset
+
+#Copyrighted
+*.anim

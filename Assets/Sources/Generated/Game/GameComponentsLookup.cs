@@ -8,27 +8,33 @@
 //------------------------------------------------------------------------------
 public static class GameComponentsLookup {
 
-    public const int CameraLookSpeed = 0;
-    public const int CameraPivotSpeed = 1;
-    public const int CameraSmoothTime = 2;
-    public const int GameView = 3;
-    public const int LocalPlayer = 4;
-    public const int MovementSpeed = 5;
-    public const int PhotonView = 6;
-    public const int PhysicView = 7;
-    public const int PlayerName = 8;
-    public const int RotationSpeed = 9;
-    public const int SpawnPoint = 10;
+    public const int AnimatorView = 0;
+    public const int CameraLookSpeed = 1;
+    public const int CameraPivotSpeed = 2;
+    public const int CameraSmoothTime = 3;
+    public const int GameView = 4;
+    public const int LocalPlayer = 5;
+    public const int MoveDirection = 6;
+    public const int MovementSpeed = 7;
+    public const int Moving = 8;
+    public const int PhotonView = 9;
+    public const int PhysicView = 10;
+    public const int PlayerName = 11;
+    public const int RotationSpeed = 12;
+    public const int SpawnPoint = 13;
 
-    public const int TotalComponents = 11;
+    public const int TotalComponents = 14;
 
     public static readonly string[] componentNames = {
+        "AnimatorView",
         "CameraLookSpeed",
         "CameraPivotSpeed",
         "CameraSmoothTime",
         "GameView",
         "LocalPlayer",
+        "MoveDirection",
         "MovementSpeed",
+        "Moving",
         "PhotonView",
         "PhysicView",
         "PlayerName",
@@ -37,12 +43,15 @@ public static class GameComponentsLookup {
     };
 
     public static readonly System.Type[] componentTypes = {
+        typeof(AnimatorViewComponent),
         typeof(CameraLookSpeedComponent),
         typeof(CameraPivotSpeedComponent),
         typeof(CameraSmoothTimeComponent),
         typeof(GameViewComponent),
         typeof(LocalPlayerComponent),
+        typeof(MoveDirectionComponent),
         typeof(MovementSpeedComponent),
+        typeof(MovingComponent),
         typeof(PhotonViewComponent),
         typeof(PhysicViewComponent),
         typeof(PlayerNameComponent),

@@ -26,9 +26,13 @@ namespace RustedGames
 
 			_systems.Add(new CreateSpawnPointSystem(_contexts, SpawnPoints));
 			_systems.Add(new CreateLocalPlayerSystem(_contexts));
+            _systems.Add(new UpdateAnimatorSystem(_contexts));
 
             _physicSystems.Add(new MovePlayerSystem(_contexts));
             _physicSystems.Add(new RotatePlayerSystem(_contexts));
+            _physicSystems.Add(new UpdateMoveDirectionSystem(_contexts, Camera.main.transform));
+
+
             _lateFixedUpdateSystems.Add(new CameraFollowTargetSystem(_contexts, CameraRoot));
             _lateFixedUpdateSystems.Add(new CameraRotateSystem(_contexts, CameraRoot, CameraPivot));
         }
