@@ -50,6 +50,8 @@ namespace RustedGames.Launcher
 					PhotonNetwork.ConnectUsingSettings();
 				}
 
+				PhotonNetwork.NickName = _gameContext.playerName.value;
+
 				_networkContext.isPendingConnection = true;
 			}
 		}
