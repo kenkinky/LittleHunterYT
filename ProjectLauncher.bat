@@ -1,1 +1,1 @@
-start /d "C:\Program Files\Unity\Hub\Editor\2019.4.31f1\Editor\" Unity.exe -projectPath "D:\Youtube\LittleHunterYT"
+start /d "C:\Program Files\Unity\Hub\Editor\2019.4.38f1\Editor\" Unity.exe -projectPath "D:\Youtube\LittleHunterYT"
