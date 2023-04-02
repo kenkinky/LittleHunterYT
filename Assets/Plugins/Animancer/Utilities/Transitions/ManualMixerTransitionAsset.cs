@@ -1,4 +1,4 @@
-// Animancer // https://kybernetik.com.au/animancer // Copyright 2022 Kybernetik //
+// Animancer // https://kybernetik.com.au/animancer // Copyright 2018-2023 Kybernetik //
 
 using Animancer.Units;
 using System;
@@ -91,7 +91,7 @@ namespace Animancer
         private bool[] _SynchronizeChildren;
 
         /// <summary>[<see cref="SerializeField"/>]
-        /// The flags to be used in <see cref="MixerState.InitializeSynchronizedChildren"/>.
+        /// The flags to be used in <see cref="ManualMixerState.InitializeSynchronizedChildren"/>.
         /// </summary>
         /// <remarks>The array can be null or empty. Any elements not in the array will be treated as true.</remarks>
         public ref bool[] SynchronizeChildren => ref _SynchronizeChildren;
@@ -229,16 +229,17 @@ namespace Animancer
         public virtual void InitializeState()
         {
             var mixer = State;
+            var childCount = mixer.ChildCount;
 
-            var auto = MixerState.AutoSynchronizeChildren;
+            var auto = ManualMixerState.SynchronizeNewChildren;
             try
             {
-                MixerState.AutoSynchronizeChildren = false;
-                mixer.Initialize(_Animations);
+                ManualMixerState.SynchronizeNewChildren = false;
+                mixer.AddRange(_Animations);
             }
             finally
             {
-                MixerState.AutoSynchronizeChildren = auto;
+                ManualMixerState.SynchronizeNewChildren = auto;
             }
 
             mixer.InitializeSynchronizedChildren(_SynchronizeChildren);
@@ -253,10 +254,9 @@ namespace Animancer
                         mixer.Root?.Component as Object);
 #endif
 
-                var children = mixer.ChildStates;
-                var count = Math.Min(children.Count, _Speeds.Length);
-                while (--count >= 0)
-                    children[count].Speed = _Speeds[count];
+                var count = Math.Min(_Animations.Length, _Speeds.Length);
+                for (int i = count - 1; i >= 0; i--)
+                    mixer.GetChild(childCount + i).Speed = _Speeds[i];
             }
         }
 

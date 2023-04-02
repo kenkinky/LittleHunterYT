@@ -172,20 +172,22 @@
         <member name="T:Animancer.Key.IListItem">
             <summary>An object with a <see cref="T:Animancer.Key"/> so it can be used in a <see cref="T:Animancer.Key.KeyedList`1"/>.</summary>
             <example>
-            It is usually easiest to just inherit from <see cref="T:Animancer.Key"/>, but if that is not possible then the
-            recommended implementation looks like this:
+            It's usually easiest to just inherit from <see cref="T:Animancer.Key"/>, but otherwise the recommended
+            implementation looks like this:
             <para></para><code>
             class MyClass : Key.IListItem
             {
-                private readonly Key Key = new Key();
-                Key Key.IListItem.Key => Key;
+                Key Key.IListItem.Key { get; } = new Key();
+                // Don't use expression bodied ...Key => new... because that would create a new one every time.
             }
             </code></example>
             https://kybernetik.com.au/animancer/api/Animancer/IListItem
             
         </member>
         <member name="P:Animancer.Key.IListItem.Key">
-            <summary>The <see cref="T:Animancer.Key"/> which stores the <see cref="T:Animancer.Key.KeyedList`1"/> index of this object.</summary>
+            <summary>
+            The <see cref="T:Animancer.Key"/> which stores the <see cref="T:Animancer.Key.KeyedList`1"/> index of this object.
+            </summary>
         </member>
         <member name="F:Animancer.Key.NotInList">
             <summary>The <see cref="F:Animancer.Key._Index"/> which indicates that an item isn't in a list.</summary>
@@ -599,6 +601,12 @@
         <member name="M:Animancer.ControllerState.Destroy">
             <inheritdoc/>
         </member>
+        <member name="M:Animancer.ControllerState.Clone(Animancer.AnimancerPlayable)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Animancer.ControllerState.Animancer#ICopyable{Animancer#ControllerState}#CopyFrom(Animancer.ControllerState)">
+            <inheritdoc/>
+        </member>
         <member name="F:Animancer.ControllerState.DefaultFadeDuration">
             <summary>
             The default constant for fade duration parameters which causes it to use the
@@ -687,17 +695,33 @@
         <member name="M:Animancer.ControllerState.ResetTrigger(System.String)">
             <summary>Resets the specified trigger parameter to false.</summary>
         </member>
+        <member name="M:Animancer.ControllerState.IsParameterControlledByCurve(System.Int32)">
+            <summary>Indicates whether the specified parameter is controlled by an <see cref="T:UnityEngine.AnimationClip"/>.</summary>
+        </member>
+        <member name="M:Animancer.ControllerState.IsParameterControlledByCurve(System.String)">
+            <summary>Indicates whether the specified parameter is controlled by an <see cref="T:UnityEngine.AnimationClip"/>.</summary>
+        </member>
         <member name="M:Animancer.ControllerState.GetParameter(System.Int32)">
             <summary>Gets the details of one of the <see cref="P:Animancer.ControllerState.Controller"/>'s parameters.</summary>
         </member>
         <member name="M:Animancer.ControllerState.GetParameterCount">
             <summary>Gets the number of parameters in the <see cref="P:Animancer.ControllerState.Controller"/>.</summary>
         </member>
-        <member name="M:Animancer.ControllerState.IsParameterControlledByCurve(System.Int32)">
-            <summary>Indicates whether the specified parameter is controlled by an <see cref="T:UnityEngine.AnimationClip"/>.</summary>
+        <member name="P:Animancer.ControllerState.parameterCount">
+            <summary>The number of parameters in the <see cref="P:Animancer.ControllerState.Controller"/>.</summary>
         </member>
-        <member name="M:Animancer.ControllerState.IsParameterControlledByCurve(System.String)">
-            <summary>Indicates whether the specified parameter is controlled by an <see cref="T:UnityEngine.AnimationClip"/>.</summary>
+        <member name="P:Animancer.ControllerState.parameters">
+            <summary>The parameters in the <see cref="P:Animancer.ControllerState.Controller"/>.</summary>
+            <remarks>
+            This property allocates a new array when first accessed. To avoid that, you can use
+            <see cref="M:Animancer.ControllerState.GetParameterCount"/> and <see cref="M:Animancer.ControllerState.GetParameter(System.Int32)"/> instead.
+            </remarks>
+        </member>
+        <member name="M:Animancer.ControllerState.SetFloat(System.String,System.Single,System.Single,System.Single,System.Single)">
+            <summary>Sets the value of the specified float parameter with smoothing.</summary>
+        </member>
+        <member name="M:Animancer.ControllerState.SetFloat(System.Int32,System.Single,System.Single,System.Single,System.Single)">
+            <summary>Sets the value of the specified float parameter with smoothing.</summary>
         </member>
         <member name="M:Animancer.ControllerState.GetLayerWeight(System.Int32)">
             <summary>Gets the weight of the layer at the specified index.</summary>
@@ -707,6 +731,9 @@
         </member>
         <member name="M:Animancer.ControllerState.GetLayerCount">
             <summary>Gets the number of layers in the <see cref="P:Animancer.ControllerState.Controller"/>.</summary>
+        </member>
+        <member name="P:Animancer.ControllerState.layerCount">
+            <summary>The number of layers in the <see cref="P:Animancer.ControllerState.Controller"/>.</summary>
         </member>
         <member name="M:Animancer.ControllerState.GetLayerIndex(System.String)">
             <summary>Gets the index of the layer with the specified name.</summary>
@@ -900,6 +927,9 @@
         <member name="M:Animancer.Float1ControllerState.GetParameterHash(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:Animancer.Float1ControllerState.Clone(Animancer.AnimancerPlayable)">
+            <inheritdoc/>
+        </member>
         <member name="T:Animancer.Float2ControllerState">
             <summary>[Pro-Only] A <see cref="T:Animancer.ControllerState"/> which manages two float parameters.</summary>
             <remarks>
@@ -948,6 +978,9 @@
             <inheritdoc/>
         </member>
         <member name="M:Animancer.Float2ControllerState.GetParameterHash(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Animancer.Float2ControllerState.Clone(Animancer.AnimancerPlayable)">
             <inheritdoc/>
         </member>
         <member name="T:Animancer.Float3ControllerState">
@@ -1008,6 +1041,9 @@
             <inheritdoc/>
         </member>
         <member name="M:Animancer.Float3ControllerState.GetParameterHash(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Animancer.Float3ControllerState.Clone(Animancer.AnimancerPlayable)">
             <inheritdoc/>
         </member>
         <member name="T:Animancer.AnimancerEvent">
@@ -1093,8 +1129,7 @@
         </member>
         <member name="M:Animancer.AnimancerEvent.Equals(Animancer.AnimancerEvent)">
             <summary>[<see cref="T:System.IEquatable`1"/>]
-            Are the <see cref="F:Animancer.AnimancerEvent.normalizedTime"/> and <see cref="F:Animancer.AnimancerEvent.callback"/> of this event equal to those of the
-            `animancerEvent`?
+            Are the <see cref="F:Animancer.AnimancerEvent.normalizedTime"/> and <see cref="F:Animancer.AnimancerEvent.callback"/> of this event equal to `other`?
             </summary>
         </member>
         <member name="M:Animancer.AnimancerEvent.Equals(System.Object)">
@@ -1535,6 +1570,9 @@
             Copies all the events from this sequence into the `array`, starting at the `index`.
             </summary>
         </member>
+        <member name="M:Animancer.AnimancerEvent.Sequence.ContentsAreEqual(Animancer.AnimancerEvent.Sequence)">
+            <summary>Are all events in this sequence identical to the ones in the `other` sequence?</summary>
+        </member>
         <member name="T:Animancer.AnimancerEvent.Sequence.Serializable">
             <summary>
             An <see cref="T:Animancer.AnimancerEvent.Sequence"/> that can be serialized and uses <see cref="T:UnityEngine.Events.UnityEvent"/>s to define
@@ -1580,7 +1618,7 @@
         <member name="P:Animancer.AnimancerEvent.Sequence.Serializable.Events">
             <summary>
             The runtime <see cref="T:Animancer.AnimancerEvent.Sequence"/> compiled from this <see cref="T:Animancer.AnimancerEvent.Sequence.Serializable"/>.
-            Each call after the first will return the same value.
+            Each call after the first will return the same reference.
             </summary>
             <remarks>
             Unlike <see cref="M:Animancer.AnimancerEvent.Sequence.Serializable.GetEventsOptional"/>, this property will create an empty
@@ -1590,7 +1628,7 @@
         <member name="M:Animancer.AnimancerEvent.Sequence.Serializable.GetEventsOptional">
             <summary>
             Returns the runtime <see cref="T:Animancer.AnimancerEvent.Sequence"/> compiled from this <see cref="T:Animancer.AnimancerEvent.Sequence.Serializable"/>.
-            Each call after the first will return the same value.
+            Each call after the first will return the same reference.
             </summary>
             <remarks>
             This method returns null if the sequence would be empty anyway and is used by the implicit
@@ -2108,15 +2146,6 @@
         <member name="T:Animancer.Editor.Tools.SpriteDataEditor">
             <summary>A wrapper around the '2D Sprite' package features for editing Sprite data.</summary>
         </member>
-        <member name="F:Animancer.Editor.Tools.SpriteDataEditor.Is2dPackagePresent">
-            <summary>Is the '2D Sprite' package currently in the project?</summary>
-        </member>
-        <member name="F:Animancer.Editor.Tools.SpriteDataEditor.SpritePackageDefineSymbol">
-            <summary>The scripting define symbol used to enable the features from the '2D Sprite' package.</summary>
-        </member>
-        <member name="P:Animancer.Editor.Tools.SpriteDataEditor.IsSpritePackageSymbolDefined">
-            <summary>Is the <see cref="F:Animancer.Editor.Tools.SpriteDataEditor.SpritePackageDefineSymbol"/> defined in the current platform?</summary>
-        </member>
         <member name="P:Animancer.Editor.Tools.SpriteDataEditor.SpriteCount">
             <summary>The number of sprites in the target data.</summary>
         </member>
@@ -2307,7 +2336,9 @@
             <summary>Appends the generic arguments of `type` (after skipping the specified number).</summary>
         </member>
         <member name="T:Animancer.Editor.AnimancerEditorUtilities.DummyAnimancerComponent">
-            <summary>[Editor-Only] An <see cref="T:Animancer.IAnimancerComponent"/> which is not actually a <see cref="T:UnityEngine.Component"/>.</summary>
+            <summary>[Editor-Only]
+            An <see cref="T:Animancer.IAnimancerComponent"/> which is not actually a <see cref="T:UnityEngine.Component"/>.
+            </summary>
         </member>
         <member name="M:Animancer.Editor.AnimancerEditorUtilities.DummyAnimancerComponent.#ctor(UnityEngine.Animator,Animancer.AnimancerPlayable)">
             <summary>Creates a new <see cref="T:Animancer.Editor.AnimancerEditorUtilities.DummyAnimancerComponent"/>.</summary>
@@ -2479,8 +2510,14 @@
             <see cref="F:Animancer.Editor.AnimancerPlayableDrawer.RepaintConstantly"/> is disabled.
             </summary>
         </member>
+        <member name="P:Animancer.Editor.AnimancerSettingsInternal.FrameStep">
+            <summary>The amount of time that will be added by a single frame step (in seconds).</summary>
+        </member>
         <member name="P:Animancer.Editor.AnimancerSettingsInternal.NewAnimationFrameRate">
             <summary>The frame rate to use for new animations.</summary>
+        </member>
+        <member name="P:Animancer.Editor.AnimancerSettingsInternal.HideEventCallbacks">
+            <summary>Should Animancer Event Callbacks be hidden in the Inspector?</summary>
         </member>
         <member name="T:Animancer.Editor.AnimancerSettingsInternal.Editor">
             <summary>A custom Inspector for <see cref="T:Animancer.Editor.AnimancerSettingsInternal"/>.</summary>
@@ -2832,6 +2869,20 @@
             </summary>
             <remarks>This method also periodically removes values that have not been used recently.</remarks>
         </member>
+        <member name="T:Animancer.Editor.AnimancerGraphControls">
+            <summary>[Editor-Only] Draws manual controls for the <see cref="P:Animancer.AnimancerPlayable.Graph"/>.</summary>
+            https://kybernetik.com.au/animancer/api/Animancer.Editor/AnimancerGraphControls
+            
+        </member>
+        <member name="M:Animancer.Editor.AnimancerGraphControls.DoGraphGUI(Animancer.AnimancerPlayable,UnityEngine.Rect@)">
+            <summary>Draws manual controls for the <see cref="P:Animancer.AnimancerPlayable.Graph"/>.</summary>
+        </member>
+        <member name="F:Animancer.Editor.AnimancerGraphControls._ShowAddAnimation">
+            <summary>Are the Add Animation controls active?</summary>
+        </member>
+        <member name="M:Animancer.Editor.AnimancerGraphControls.AddAddAnimationFunction(UnityEditor.GenericMenu)">
+            <summary>Adds a function to show or hide the "Add Animation" field.</summary>
+        </member>
         <member name="T:Animancer.Editor.AnimancerGUI">
             <summary>[Editor-Only] Various GUI utilities used throughout Animancer.</summary>
             https://kybernetik.com.au/animancer/api/Animancer.Editor/AnimancerGUI
@@ -2867,7 +2918,7 @@
             <summary>A more compact <see cref="P:UnityEditor.EditorStyles.miniButton"/> with a fixed size as a tiny box.</summary>
         </member>
         <member name="M:Animancer.Editor.AnimancerGUI.RepaintEverything">
-            <summary>Wrapper around <see cref="M:UnityEditorInternal.InternalEditorUtility.RepaintAllViews"/>.</summary>
+            <summary>Calls <see cref="M:UnityEditorInternal.InternalEditorUtility.RepaintAllViews"/>.</summary>
         </member>
         <member name="T:Animancer.Editor.AnimancerGUI.SpacingMode">
             <summary>Indicates where <see cref="M:Animancer.Editor.AnimancerGUI.LayoutSingleLineRect(Animancer.Editor.AnimancerGUI.SpacingMode)"/> should add the <see cref="P:Animancer.Editor.AnimancerGUI.StandardSpacing"/>.</summary>
@@ -2944,6 +2995,13 @@
             <see cref="P:UnityEditor.EditorGUIUtility.labelWidth"/>.
             </summary>
         </member>
+        <member name="M:Animancer.Editor.AnimancerGUI.ReSelectCurrentObjects">
+            <summary>Clears the <see cref="P:UnityEditor.Selection.objects"/> then returns it to its current state.</summary>
+            <remarks>
+            This forces the <see cref="T:UnityEditorInternal.ReorderableList"/> drawer to adjust to height changes which
+            it unfortunately doesn't do on its own..
+            </remarks>
+        </member>
         <member name="M:Animancer.Editor.AnimancerGUI.DoWeightLabel(UnityEngine.Rect@,System.Single)">
             <summary>
             Draws a label showing the `weight` aligned to the right side of the `area` and reduces its
@@ -2970,6 +3028,30 @@
         </member>
         <member name="M:Animancer.Editor.AnimancerGUI.LoadIcon(System.String)">
             <summary>Loads an icon texture and sets it to use <see cref="F:UnityEngine.FilterMode.Bilinear"/>.</summary>
+        </member>
+        <member name="M:Animancer.Editor.AnimancerGUI.IconContent(UnityEngine.GUIContent@,System.String)">
+            <summary>Calls <see cref="M:UnityEditor.EditorGUIUtility.IconContent(System.String)"/> if the `content` was null.</summary>
+        </member>
+        <member name="M:Animancer.Editor.AnimancerGUI.CompactMiniButton(UnityEngine.GUIContent)">
+            <summary>Draws a button using <see cref="P:UnityEditor.EditorStyles.miniButton"/> and <see cref="F:Animancer.Editor.AnimancerGUI.DontExpandWidth"/>.</summary>
+        </member>
+        <member name="M:Animancer.Editor.AnimancerGUI.CompactMiniButton(UnityEngine.Rect,UnityEngine.GUIContent)">
+            <summary>Draws a button using <see cref="P:UnityEditor.EditorStyles.miniButton"/>.</summary>
+        </member>
+        <member name="P:Animancer.Editor.AnimancerGUI.PlayButtonContent">
+            <summary><see cref="M:Animancer.Editor.AnimancerGUI.IconContent(UnityEngine.GUIContent@,System.String)"/> for a play button.</summary>
+        </member>
+        <member name="P:Animancer.Editor.AnimancerGUI.PauseButtonContent">
+            <summary><see cref="M:Animancer.Editor.AnimancerGUI.IconContent(UnityEngine.GUIContent@,System.String)"/> for a pause button.</summary>
+        </member>
+        <member name="P:Animancer.Editor.AnimancerGUI.StepBackwardButtonContent">
+            <summary><see cref="M:Animancer.Editor.AnimancerGUI.IconContent(UnityEngine.GUIContent@,System.String)"/> for a step backward button.</summary>
+        </member>
+        <member name="P:Animancer.Editor.AnimancerGUI.StepForwardButtonContent">
+            <summary><see cref="M:Animancer.Editor.AnimancerGUI.IconContent(UnityEngine.GUIContent@,System.String)"/> for a step forward button.</summary>
+        </member>
+        <member name="P:Animancer.Editor.AnimancerGUI.PlayButtonWidth">
+            <summary>The default width of <see cref="P:Animancer.Editor.AnimancerGUI.PlayButtonContent"/> using <see cref="P:UnityEditor.EditorStyles.miniButton"/>.</summary>
         </member>
         <member name="M:Animancer.Editor.AnimancerGUI.TryUseClickEvent(UnityEngine.Rect,System.Int32)">
             <summary>
@@ -3701,25 +3783,6 @@
         <member name="M:Animancer.Editor.TransitionDrawer.DrawerContext.Dispose">
             <summary>Decrements the <see cref="F:Animancer.Editor.TransitionDrawer.DrawerContext.Stack"/>.</summary>
         </member>
-        <member name="T:Animancer.Editor.ScriptingDefineSymbols">
-            <summary>[Editor-Only]
-            Various utility functions for accessing scripting define symbols.
-            </summary>
-            https://kybernetik.com.au/animancer/api/Animancer.Editor/ScriptingDefineSymbols
-            
-        </member>
-        <member name="P:Animancer.Editor.ScriptingDefineSymbols.CurrentBuildTarget">
-            <summary>The platform currently selected in the Player Settings.</summary>
-        </member>
-        <member name="P:Animancer.Editor.ScriptingDefineSymbols.Symbols">
-            <summary>The symbols defined in the <see cref="P:Animancer.Editor.ScriptingDefineSymbols.CurrentBuildTarget"/>.</summary>
-        </member>
-        <member name="M:Animancer.Editor.ScriptingDefineSymbols.IsSymbolDefined(System.String)">
-            <summary>Is the `symbol` defined in the <see cref="P:Animancer.Editor.ScriptingDefineSymbols.CurrentBuildTarget"/>.</summary>
-        </member>
-        <member name="M:Animancer.Editor.ScriptingDefineSymbols.SetSymbolDefined(System.String,System.Boolean)">
-            <summary>Defines or undefines the `symbol` in the <see cref="P:Animancer.Editor.ScriptingDefineSymbols.CurrentBuildTarget"/>.</summary>
-        </member>
         <member name="T:Animancer.Editor.BoolPref">
             <summary>[Editor-Only]
             A simple wrapper around <see cref="T:UnityEditor.EditorPrefs"/> to get and set a bool.
@@ -4396,7 +4459,7 @@
         <member name="M:Animancer.Editor.TransitionPreviewWindow.OnDestroy">
             <summary>Cleans up this window.</summary>
         </member>
-        <member name="M:Animancer.Editor.TransitionPreviewWindow.OnGUI">
+        <member name="M:Animancer.Editor.TransitionPreviewWindow.OnSceneGUI">
             <inheritdoc/>
         </member>
         <member name="M:Animancer.Editor.TransitionPreviewWindow.Update">
@@ -4414,9 +4477,6 @@
         </member>
         <member name="M:Animancer.Editor.TransitionPreviewWindow.CanBePreviewed(UnityEditor.SerializedProperty)">
             <summary>Indicates whether the `property` is able to be previewed by this system.</summary>
-        </member>
-        <member name="T:Animancer.Editor.TransitionPreviewWindow.BlockAllLogs">
-            <summary>Prevents log messages between <see cref="M:Animancer.Editor.TransitionPreviewWindow.BlockAllLogs.Activate"/> and <see cref="M:System.IDisposable.Dispose"/>.</summary>
         </member>
         <member name="T:Animancer.Editor.TransitionPreviewWindow.Inspector">
             <summary>[Internal] Custom Inspector for the <see cref="T:Animancer.Editor.TransitionPreviewWindow"/>.</summary>
@@ -4660,6 +4720,15 @@
             Creates and returns a new <see cref="T:Animancer.ClipState"/> to play the `clip` and registers it with the `key`.
             </summary>
         </member>
+        <member name="M:Animancer.AnimancerLayer.GetState(System.Object@)">
+            <summary>Returns a state registered with the `key` and attached to this layer or null if none exist.</summary>
+            <exception cref="T:System.ArgumentNullException">The `key` is null.</exception>
+            <remarks>
+            If a state is registered with the `key` but on a different layer, this method will use that state as the
+            key and try to look up another state with it. This allows it to associate multiple states with the same
+            original key.
+            </remarks>
+        </member>
         <member name="M:Animancer.AnimancerLayer.CreateIfNew(UnityEngine.AnimationClip,UnityEngine.AnimationClip)">
             <summary>
             Calls <see cref="M:Animancer.AnimancerLayer.GetOrCreateState(UnityEngine.AnimationClip,System.Boolean)"/> for each of the specified clips.
@@ -4690,7 +4759,7 @@
         </member>
         <member name="M:Animancer.AnimancerLayer.GetOrCreateState(UnityEngine.AnimationClip,System.Boolean)">
             <summary>
-            Calls <see cref="M:Animancer.AnimancerPlayable.GetKey(UnityEngine.AnimationClip)"/> and returns the state which registered with that key or
+            Calls <see cref="M:Animancer.AnimancerPlayable.GetKey(UnityEngine.AnimationClip)"/> and returns the state registered with that key or
             creates one if it doesn't exist.
             <para></para>
             If the state already exists but has the wrong <see cref="P:Animancer.AnimancerState.Clip"/>, the `allowSetClip`
@@ -4708,23 +4777,52 @@
             </summary>
         </member>
         <member name="M:Animancer.AnimancerLayer.GetOrCreateState(System.Object,UnityEngine.AnimationClip,System.Boolean)">
-            <summary>
-            Returns the state which registered with the `key` or creates one if it doesn't exist.
-            <para></para>
+            <summary>Returns the state registered with the `key` or creates one if it doesn't exist.</summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException">The `key` is null.</exception>
+            <remarks>
             If the state already exists but has the wrong <see cref="P:Animancer.AnimancerState.Clip"/>, the `allowSetClip`
             parameter determines what will happen. False causes it to throw an <see cref="T:System.ArgumentException"/> while
             true allows it to change the <see cref="P:Animancer.AnimancerState.Clip"/>. Note that the change is somewhat costly to
             performance to use with caution.
-            <seealso cref="T:Animancer.AnimancerState"/>
-            </summary>
-            <exception cref="T:System.ArgumentException"/>
-            <exception cref="T:System.ArgumentNullException">The `key` is null.</exception>
-            <remarks>
+            <para></para>
             See also: <see cref="M:Animancer.AnimancerPlayable.StateDictionary.GetOrCreate(System.Object,UnityEngine.AnimationClip,System.Boolean)"/>.
             </remarks>
         </member>
+        <member name="M:Animancer.AnimancerLayer.GetOrCreateState(Animancer.AnimancerState)">
+            <summary>Returns the `state` if it's a child of this layer. Otherwise makes a clone of it.</summary>
+        </member>
+        <member name="P:Animancer.AnimancerLayer.WeightlessThreshold">
+            <summary>
+            The maximum <see cref="P:Animancer.AnimancerNode.Weight"/> that <see cref="M:Animancer.AnimancerLayer.GetOrCreateWeightlessState(Animancer.AnimancerState)"/> will treat as
+            being weightless. Default = 0.1.
+            </summary>
+            <remarks>This allows states with very small weights to be reused instead of needing to create new ones.</remarks>
+        </member>
+        <member name="P:Animancer.AnimancerLayer.MaxCloneCount">
+            <summary>
+            The maximum number of duplicate states that can be created for a single clip when trying to get a
+            weightless state. Exceeding this limit will cause it to just use the state with the lowest weight.
+            Default = 3.
+            </summary>
+        </member>
+        <member name="M:Animancer.AnimancerLayer.GetOrCreateWeightlessState(Animancer.AnimancerState)">
+            <summary>
+            If the `state`'s <see cref="P:Animancer.AnimancerNode.Weight"/> is not currently low, this method finds or creates a
+            copy of it which is low. he returned <see cref="P:Animancer.AnimancerState.Time"/> is also set to 0.
+            </summary>
+            <remarks>
+            If this method would exceed the <see cref="P:Animancer.AnimancerLayer.MaxCloneCount"/>, it returns the clone with the lowest weight.
+            <para></para>
+            "Low" weight is defined as less than or equal to the <see cref="P:Animancer.AnimancerLayer.WeightlessThreshold"/>.
+            <para></para>
+            The <see href="https://kybernetik.com.au/animancer/docs/manual/blending/fading/modes">Fade Modes</see> page
+            explains why clones are created.
+            </remarks>
+        </member>
         <member name="M:Animancer.AnimancerLayer.DestroyStates">
-            <summary>Destroys all states connected to this layer. This operation cannot be undone.</summary>
+            <summary>Destroys all states connected to this layer.</summary>
+            <remarks>This operation cannot be undone.</remarks>
         </member>
         <member name="M:Animancer.AnimancerLayer.OnStartFade">
             <inheritdoc/>
@@ -4746,6 +4844,10 @@
             <para></para>
             This method is safe to call repeatedly without checking whether the `state` was already playing.
             </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            The <see cref="P:Animancer.AnimancerState.Parent"/> is another state (likely a <see cref="T:Animancer.ManualMixerState"/>).
+            It must be either null or a layer.
+            </exception>
         </member>
         <member name="M:Animancer.AnimancerLayer.Play(UnityEngine.AnimationClip,System.Single,Animancer.FadeMode)">
             <summary>
@@ -4838,32 +4940,6 @@
             <see cref="F:Animancer.FadeMode.NormalizedFromStart"/>.
             </exception>
         </member>
-        <member name="P:Animancer.AnimancerLayer.MaxStateDepth">
-            <summary>[Assert-Only]
-            The maximum number of duplicate states that can be created by <see cref="M:Animancer.AnimancerLayer.GetOrCreateWeightlessState(Animancer.AnimancerState)"/> for
-            a single clip before it will start giving usage warnings. Default = 5.
-            </summary>
-            <remarks>This value can be set by <see cref="M:Animancer.AnimancerLayer.SetMaxStateDepth(System.Int32)"/>.</remarks>
-        </member>
-        <member name="M:Animancer.AnimancerLayer.SetMaxStateDepth(System.Int32)">
-            <summary>[Assert-Conditional] Sets the <see cref="P:Animancer.AnimancerLayer.MaxStateDepth"/>.</summary>
-            <remarks>This would not need to be a separate method if C# supported conditional property setters.</remarks>
-        </member>
-        <member name="P:Animancer.AnimancerLayer.WeightlessThreshold">
-            <summary>
-            The maximum <see cref="P:Animancer.AnimancerNode.Weight"/> that <see cref="M:Animancer.AnimancerLayer.GetOrCreateWeightlessState(Animancer.AnimancerState)"/> will treat as
-            being weightless. Default = 0.01.
-            </summary>
-            <remarks>This allows states with very small weights to be reused instead of needing to create new ones.</remarks>
-        </member>
-        <member name="M:Animancer.AnimancerLayer.GetOrCreateWeightlessState(Animancer.AnimancerState)">
-            <summary>
-            If the `state` is not currently at low <see cref="P:Animancer.AnimancerNode.Weight"/>, this method finds a copy of it
-            which is at low or creates a new one.
-            </summary>
-            <remarks>"Low" weight is defined as less than or equal to the <see cref="P:Animancer.AnimancerLayer.WeightlessThreshold"/>.</remarks>
-            <exception cref="T:System.InvalidOperationException">The <see cref="P:Animancer.AnimancerState.Clip"/> is null.</exception>
-        </member>
         <member name="M:Animancer.AnimancerLayer.Stop">
             <summary>
             Sets <see cref="P:Animancer.AnimancerNode.Weight"/> = 0 and calls <see cref="M:Animancer.AnimancerState.Stop"/> on all animations
@@ -4919,18 +4995,16 @@
             <summary>
             The internal object this node manages in the <see cref="T:UnityEngine.Playables.PlayableGraph"/>.
             <para></para>
-            Must be set by <see cref="M:Animancer.AnimancerNode.CreatePlayable"/>. Failure to do so will throw the following exception throughout
-            the system when using this node: "<see cref="T:System.ArgumentException"/>: The playable passed as an argument is
-            invalid. To create a valid playable, please use the appropriate Create method".
+            Must be set by <see cref="M:Animancer.AnimancerNode.CreatePlayable"/>. Failure to do so will throw the following exception
+            throughout the system when using this node: "<see cref="T:System.ArgumentException"/>: The playable passed as an
+            argument is invalid. To create a valid playable, please use the appropriate Create method".
             </summary>
         </member>
         <member name="P:Animancer.AnimancerNode.Animancer#IPlayableWrapper#Playable">
-            <summary>[Internal] The <see cref="T:UnityEngine.Playables.Playable"/> managed by this node.</summary>
+            <summary>The internal <see cref="T:UnityEngine.Playables.Playable"/> managed by this node.</summary>
         </member>
         <member name="P:Animancer.AnimancerNode.IsValid">
-            <summary>
-            Indicates whether the <see cref="F:Animancer.AnimancerNode._Playable"/> is usable (properly initialized and not destroyed).
-            </summary>
+            <summary>Is the <see cref="T:UnityEngine.Playables.Playable"/> usable (properly initialized and not destroyed)?</summary>
         </member>
         <member name="F:Animancer.AnimancerNode._IsInspectorExpanded">
             <summary>[Editor-Only, Internal] Indicates whether the Inspector details for this node are expanded.</summary>
@@ -4950,6 +5024,9 @@
         </member>
         <member name="M:Animancer.AnimancerNode.RecreatePlayableRecursive">
             <summary>Calls <see cref="M:Animancer.AnimancerNode.RecreatePlayable"/> on this node and all its children recursively.</summary>
+        </member>
+        <member name="M:Animancer.AnimancerNode.Animancer#ICopyable{Animancer#AnimancerNode}#CopyFrom(Animancer.AnimancerNode)">
+            <inheritdoc/>
         </member>
         <member name="P:Animancer.AnimancerNode.Root">
             <summary>The <see cref="T:Animancer.AnimancerPlayable"/> at the root of the graph.</summary>
@@ -4988,6 +5065,11 @@
         <member name="F:Animancer.AnimancerNode._ConstructorStackTrace">
             <summary>[Assert-Only]
             The stack trace of the constructor (or null if <see cref="P:Animancer.AnimancerNode.TraceConstructor"/> was false).
+            </summary>
+        </member>
+        <member name="M:Animancer.AnimancerNode.GetConstructorStackTrace(Animancer.AnimancerNode)">
+            <summary>[Assert-Only]
+            Returns the stack trace of the constructor (or null if <see cref="P:Animancer.AnimancerNode.TraceConstructor"/> was false).
             </summary>
         </member>
         <member name="M:Animancer.AnimancerNode.Finalize">
@@ -5174,33 +5256,6 @@
             <see cref="P:Animancer.AnimancerNode.FadeSpeed"/>.
             </summary>
         </member>
-        <member name="P:Animancer.AnimancerNode.ApplyParentAnimatorIK">
-            <summary>
-            Should setting the <see cref="P:Animancer.AnimancerNode.Parent"/> also set this node's <see cref="P:Animancer.AnimancerNode.ApplyAnimatorIK"/> to match it?
-            Default is true.
-            </summary>
-        </member>
-        <member name="P:Animancer.AnimancerNode.ApplyParentFootIK">
-            <summary>
-            Should setting the <see cref="P:Animancer.AnimancerNode.Parent"/> also set this node's <see cref="P:Animancer.AnimancerNode.ApplyFootIK"/> to match it?
-            Default is true.
-            </summary>
-        </member>
-        <member name="M:Animancer.AnimancerNode.CopyIKFlags(Animancer.AnimancerNode)">
-            <summary>
-            Copies the IK settings from the <see cref="P:Animancer.AnimancerNode.Parent"/>:
-            <list type="bullet">
-            <item>If <see cref="P:Animancer.AnimancerNode.ApplyParentAnimatorIK"/> is true, copy <see cref="P:Animancer.AnimancerNode.ApplyAnimatorIK"/>.</item>
-            <item>If <see cref="P:Animancer.AnimancerNode.ApplyParentFootIK"/> is true, copy <see cref="P:Animancer.AnimancerNode.ApplyFootIK"/>.</item>
-            </list>
-            </summary>
-        </member>
-        <member name="P:Animancer.AnimancerNode.ApplyAnimatorIK">
-            <inheritdoc/>
-        </member>
-        <member name="P:Animancer.AnimancerNode.ApplyFootIK">
-            <inheritdoc/>
-        </member>
         <member name="P:Animancer.AnimancerNode.Speed">
              <summary>[Pro-Only] How fast the <see cref="P:Animancer.AnimancerState.Time"/> is advancing every frame (default 1).</summary>
              
@@ -5244,6 +5299,33 @@
             The <see cref="P:Animancer.AnimancerNode.Speed"/> of this node multiplied by the <see cref="P:Animancer.AnimancerNode.Speed"/> of each of its parents to
             determine the actual speed it's playing at.
             </summary>
+        </member>
+        <member name="P:Animancer.AnimancerNode.ApplyParentAnimatorIK">
+            <summary>
+            Should setting the <see cref="P:Animancer.AnimancerNode.Parent"/> also set this node's <see cref="P:Animancer.AnimancerNode.ApplyAnimatorIK"/> to match it?
+            Default is true.
+            </summary>
+        </member>
+        <member name="P:Animancer.AnimancerNode.ApplyParentFootIK">
+            <summary>
+            Should setting the <see cref="P:Animancer.AnimancerNode.Parent"/> also set this node's <see cref="P:Animancer.AnimancerNode.ApplyFootIK"/> to match it?
+            Default is true.
+            </summary>
+        </member>
+        <member name="M:Animancer.AnimancerNode.CopyIKFlags(Animancer.AnimancerNode)">
+            <summary>
+            Copies the IK settings from the <see cref="P:Animancer.AnimancerNode.Parent"/>:
+            <list type="bullet">
+            <item>If <see cref="P:Animancer.AnimancerNode.ApplyParentAnimatorIK"/> is true, copy <see cref="P:Animancer.AnimancerNode.ApplyAnimatorIK"/>.</item>
+            <item>If <see cref="P:Animancer.AnimancerNode.ApplyParentFootIK"/> is true, copy <see cref="P:Animancer.AnimancerNode.ApplyFootIK"/>.</item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:Animancer.AnimancerNode.ApplyAnimatorIK">
+            <inheritdoc/>
+        </member>
+        <member name="P:Animancer.AnimancerNode.ApplyFootIK">
+            <inheritdoc/>
         </member>
         <member name="P:Animancer.AnimancerNode.DebugName">
             <summary>[Assert-Only] The Inspector display name of this node.</summary>
@@ -5464,13 +5546,6 @@
             inputs because it ignores the <see cref="P:Animancer.AnimancerNode.Weight"/> of the layer when there is only one.
             </remarks>
         </member>
-        <member name="F:Animancer.AnimancerPlayable.Template">
-            <summary>
-            Since <see cref="M:UnityEngine.Playables.ScriptPlayable`1.Create(UnityEngine.Playables.PlayableGraph,System.Int32)"/> needs to clone an existing instance, we
-            keep a static template to avoid allocating an extra garbage one every time. This is why the fields are
-            assigned in <see cref="M:Animancer.AnimancerPlayable.OnPlayableCreate(UnityEngine.Playables.Playable)"/> rather than being readonly with field initializers.
-            </summary>
-        </member>
         <member name="M:Animancer.AnimancerPlayable.Create">
             <summary>
             Creates a new <see cref="T:UnityEngine.Playables.PlayableGraph"/> containing an <see cref="T:Animancer.AnimancerPlayable"/>.
@@ -5481,8 +5556,24 @@
             Consider calling <see cref="M:Animancer.AnimancerPlayable.SetNextGraphName(System.String)"/> before this method to give it a name.
             </summary>
         </member>
+        <member name="F:Animancer.AnimancerPlayable.Template">
+            <summary>
+            Since <see cref="M:UnityEngine.Playables.ScriptPlayable`1.Create(UnityEngine.Playables.PlayableGraph,System.Int32)"/> needs to clone an existing instance, we
+            keep a static template to avoid allocating an extra garbage one every time. This is why the fields are
+            assigned in <see cref="M:Animancer.AnimancerPlayable.OnPlayableCreate(UnityEngine.Playables.Playable)"/> rather than being readonly with field initializers.
+            </summary>
+        </member>
         <member name="M:Animancer.AnimancerPlayable.Create(UnityEngine.Playables.PlayableGraph)">
             <summary>Creates an <see cref="T:Animancer.AnimancerPlayable"/> in an existing <see cref="T:UnityEngine.Playables.PlayableGraph"/>.</summary>
+        </member>
+        <member name="M:Animancer.AnimancerPlayable.Create``1(UnityEngine.Playables.PlayableGraph,``0)">
+            <summary>Creates an <see cref="T:Animancer.AnimancerPlayable"/> in an existing <see cref="T:UnityEngine.Playables.PlayableGraph"/>.</summary>
+            <example>
+            When inheriting from <see cref="T:Animancer.AnimancerPlayable"/>, it is recommended to give your class a field like the
+            following to use as the `template` for this method:
+            <code>
+            private static readonly MyAnimancerPlayable Template = new MyAnimancerPlayable();
+            </code></example>
         </member>
         <member name="M:Animancer.AnimancerPlayable.OnPlayableCreate(UnityEngine.Playables.Playable)">
             <summary>[Internal] Called by Unity when it creates this <see cref="T:Animancer.AnimancerPlayable"/>.</summary>
@@ -6011,7 +6102,7 @@
             Lowering this value will destroy any layers beyond the specified value.
             <para></para>
             Changing this value will cause the allocation of a new array and garbage collection of the old one, so
-            you should generally set the <see cref="P:Animancer.AnimancerPlayable.LayerList.DefaultCapacity"/> before initialising this list.
+            you should generally set the <see cref="P:Animancer.AnimancerPlayable.LayerList.DefaultCapacity"/> before initializing this list.
             </remarks>
             
             <exception cref="T:System.ArgumentOutOfRangeException">The value is not greater than 0.</exception>
@@ -6305,22 +6396,25 @@
         </member>
         <member name="M:Animancer.AnimancerState.SetRoot(Animancer.AnimancerPlayable)">
             <summary>The <see cref="T:Animancer.AnimancerPlayable"/> at the root of the graph.</summary>
+            <exception cref="T:System.InvalidOperationException">
+            The <see cref="P:Animancer.AnimancerState.Parent"/> has a different <see cref="P:Animancer.AnimancerNode.Root"/>.
+            Setting the <see cref="P:Animancer.AnimancerState.Parent"/>'s <see cref="P:Animancer.AnimancerNode.Root"/> will apply to its children recursively
+            because they must always match.
+            </exception>
         </member>
         <member name="P:Animancer.AnimancerState.Parent">
             <summary>The object which receives the output of the <see cref="T:UnityEngine.Playables.Playable"/>.</summary>
         </member>
         <member name="M:Animancer.AnimancerState.SetParent(Animancer.AnimancerNode,System.Int32)">
-            <summary>Connects this state to the `parent` mixer at the specified `index`.</summary>
+            <summary>Connects this state to the `parent` state at the specified `index`.</summary>
             <remarks>
-            Use <see cref="M:Animancer.AnimancerLayer.AddChild(Animancer.AnimancerState)"/> instead of this method to connect a state to an
-            available port on a layer.
+            If the `parent` is null, this state will be disconnected from everything.
+            <para></para>
+            Use <see cref="M:Animancer.AnimancerLayer.AddChild(Animancer.AnimancerState)"/> instead of this method to connect to a layer.
             </remarks>
         </member>
-        <member name="M:Animancer.AnimancerState.ClearParent">
-            <summary>[Internal]
-            Called by <see cref="M:Animancer.AnimancerNode.OnAddChild(System.Collections.Generic.IList{Animancer.AnimancerState},Animancer.AnimancerState)"/> if the specified
-            port is already occupied so it can be cleared without triggering any other calls.
-            </summary>
+        <member name="M:Animancer.AnimancerState.SetParentInternal(Animancer.AnimancerNode,System.Int32)">
+            <summary>[Internal] Directly sets the <see cref="P:Animancer.AnimancerState.Parent"/> without triggering any other connection methods.</summary>
         </member>
         <member name="P:Animancer.AnimancerState.Layer">
             <inheritdoc/>
@@ -6400,16 +6494,21 @@
         </member>
         <member name="P:Animancer.AnimancerState.IsStopped">
             <summary>
-            Returns true if this state is not playing and is at 0 <see cref="P:Animancer.AnimancerNode.Weight"/>.
+            Returns true if this state isn't playing and is at 0 <see cref="P:Animancer.AnimancerNode.Weight"/>.
             </summary>
         </member>
         <member name="M:Animancer.AnimancerState.Play">
-            <summary>Plays this state immediately, without any blending.</summary>
+            <summary>
+            Plays this state immediately, without any blending.
+            <para></para>
+            Unlike <see cref="M:Animancer.AnimancerPlayable.Play(Animancer.AnimancerState)"/>, this method only affects this state and won't
+            stop any others that are playing.
+            </summary>
             <remarks>
             Sets <see cref="P:Animancer.AnimancerState.IsPlaying"/> = true, <see cref="P:Animancer.AnimancerNode.Weight"/> = 1, and clears the
             <see cref="P:Animancer.AnimancerState.Events"/> (unless <see cref="P:Animancer.AnimancerState.AutomaticallyClearEvents"/> is disabled).
             <para></para>
-            This method does not change the <see cref="P:Animancer.AnimancerState.Time"/> so it will continue from its current value.
+            Doesn't change the <see cref="P:Animancer.AnimancerState.Time"/> so it will continue from its current value.
             </remarks>
         </member>
         <member name="M:Animancer.AnimancerState.Stop">
@@ -6463,6 +6562,9 @@
              the animated object either freezes in place or starts again from the beginning according to whether it is
              looping or not.
              <para></para>
+             Events and root motion between the old and new time will be skipped when setting this value. Use
+             <see cref="M:Animancer.AnimancerState.MoveTime(System.Single,System.Boolean)"/> instead if you don't want that behaviour.
+             <para></para>
              This property internally uses <see cref="P:Animancer.AnimancerState.RawTime"/> whenever the value is out of date or gets changed.
              <para></para>
              <em>Animancer Lite does not allow this value to be changed in runtime builds (except resetting it to 0).</em>
@@ -6484,6 +6586,9 @@
                  state.Speed = -1;
              }
              </code></example>
+        </member>
+        <member name="P:Animancer.AnimancerState.TimeD">
+            <summary>The underlying <see cref="T:System.Double"/> value of <see cref="P:Animancer.AnimancerState.Time"/>.</summary>
         </member>
         <member name="P:Animancer.AnimancerState.RawTime">
             <summary>
@@ -6512,7 +6617,10 @@
              current loop while the integer part (<c>(int)NormalizedTime</c>) is the number of times the animation has
              been looped.
              <para></para>
-             <em>Animancer Lite does not allow this value to be changed to a value other than 0 in runtime builds.</em>
+             Events and root motion between the old and new time will be skipped when setting this value. Use
+             <see cref="M:Animancer.AnimancerState.MoveTime(System.Single,System.Boolean)"/> instead if you don't want that behaviour.
+             <para></para>
+             <em>Animancer Lite does not allow this value to be changed in runtime builds (except resetting it to 0).</em>
              </remarks>
             
              <example><code>
@@ -6532,7 +6640,16 @@
              }
              </code></example>
         </member>
+        <member name="P:Animancer.AnimancerState.NormalizedTimeD">
+            <summary>The underlying <see cref="T:System.Double"/> value of <see cref="P:Animancer.AnimancerState.NormalizedTime"/>.</summary>
+        </member>
         <member name="M:Animancer.AnimancerState.MoveTime(System.Single,System.Boolean)">
+            <summary>
+            Sets the <see cref="P:Animancer.AnimancerState.Time"/> or <see cref="P:Animancer.AnimancerState.NormalizedTime"/>, but unlike those properties this method
+            applies any Root Motion and Animation Events (but not Animancer Events) between the old and new time.
+            </summary>
+        </member>
+        <member name="M:Animancer.AnimancerState.MoveTime(System.Double,System.Boolean)">
             <summary>
             Sets the <see cref="P:Animancer.AnimancerState.Time"/> or <see cref="P:Animancer.AnimancerState.NormalizedTime"/>, but unlike those properties this method
             applies any Root Motion and Animation Events (but not Animancer Events) between the old and new time.
@@ -6629,6 +6746,22 @@
             This method is NOT called automatically, so when implementing a custom state type you must use
             <see cref="P:Animancer.AnimancerPlayable.Disposables"/> if you need to guarantee that things will get cleaned up.
             </remarks>
+        </member>
+        <member name="M:Animancer.AnimancerState.Clone">
+            <summary>Creates a copy of this state with the same <see cref="P:Animancer.AnimancerNode.Root"/>.</summary>
+        </member>
+        <member name="M:Animancer.AnimancerState.Clone(Animancer.AnimancerPlayable)">
+            <summary>Creates a copy of this state with the specified <see cref="P:Animancer.AnimancerNode.Root"/>.</summary>
+        </member>
+        <member name="M:Animancer.AnimancerState.SetNewCloneRoot(Animancer.AnimancerPlayable)">
+            <summary>Sets the <see cref="P:Animancer.AnimancerNode.Root"/>.</summary>
+            <remarks>
+            This method skips several steps of <see cref="M:Animancer.AnimancerState.SetRoot(Animancer.AnimancerPlayable)"/> and is intended to only be called on states
+            immediately after their creation.
+            </remarks>
+        </member>
+        <member name="M:Animancer.AnimancerState.Animancer#ICopyable{Animancer#AnimancerState}#CopyFrom(Animancer.AnimancerState)">
+            <inheritdoc/>
         </member>
         <member name="M:Animancer.AnimancerState.GatherAnimationClips(System.Collections.Generic.ICollection{UnityEngine.AnimationClip})">
             <summary>[<see cref="T:Animancer.IAnimationClipCollection"/>] Gathers all the animations in this state.</summary>
@@ -6851,6 +6984,10 @@
             <summary>[Animancer Extension] Is the `value` not NaN or Infinity?</summary>
             <remarks>Newer versions of the .NET framework apparently have a <c>float.IsFinite</c> method.</remarks>
         </member>
+        <member name="M:Animancer.AnimancerUtilities.IsFinite(System.Double)">
+            <summary>[Animancer Extension] Is the `value` not NaN or Infinity?</summary>
+            <remarks>Newer versions of the .NET framework apparently have a <c>double.IsFinite</c> method.</remarks>
+        </member>
         <member name="M:Animancer.AnimancerUtilities.IsFinite(UnityEngine.Vector2)">
             <summary>[Animancer Extension] Are all components of the `value` not NaN or Infinity?</summary>
         </member>
@@ -6912,6 +7049,12 @@
             disabled in the Import Settings of each <see cref="T:UnityEngine.AnimationClip"/> in the mixer.
             </summary>
         </member>
+        <member name="M:Animancer.AnimancerUtilities.CopyParameterValue(UnityEngine.Animator,UnityEngine.Animator,UnityEngine.AnimatorControllerParameter)">
+            <summary>Copies the value of the `parameter` from `copyFrom` to `copyTo`.</summary>
+        </member>
+        <member name="M:Animancer.AnimancerUtilities.CopyParameterValue(UnityEngine.Animations.AnimatorControllerPlayable,UnityEngine.Animations.AnimatorControllerPlayable,UnityEngine.AnimatorControllerParameter)">
+            <summary>Copies the value of the `parameter` from `copyFrom` to `copyTo`.</summary>
+        </member>
         <member name="M:Animancer.AnimancerUtilities.GetParameterValue(UnityEngine.Animator,UnityEngine.AnimatorControllerParameter)">
             <summary>Gets the value of the `parameter` in the `animator`.</summary>
         </member>
@@ -6928,9 +7071,14 @@
             <summary>
             Creates a <see cref="T:Unity.Collections.NativeArray`1"/> containing a single element so that it can be used like a reference
             in Unity's C# Job system which does not allow regular reference types.
-            <para></para>
-            Note that you must call <see cref="M:Unity.Collections.NativeArray`1.Dispose"/> when you are done with the array.
             </summary>
+            <remarks>Note that you must call <see cref="M:Unity.Collections.NativeArray`1.Dispose"/> when you're done with the array.</remarks>
+        </member>
+        <member name="M:Animancer.AnimancerUtilities.ConvertToTransformStreamHandles(System.Collections.Generic.IList{UnityEngine.Transform},UnityEngine.Animator)">
+            <summary>
+            Creates a <see cref="T:Unity.Collections.NativeArray`1"/> of <see cref="T:UnityEngine.Animations.TransformStreamHandle"/>s for each of the `transforms`.
+            </summary>
+            <remarks>Note that you must call <see cref="M:Unity.Collections.NativeArray`1.Dispose"/> when you're done with the array.</remarks>
         </member>
         <member name="M:Animancer.AnimancerUtilities.GetUnsupportedMessage``1(``0)">
             <summary>Returns a string stating that the `value` is unsupported.</summary>
@@ -7129,6 +7277,9 @@
         <member name="M:Animancer.ClipState.Destroy">
             <inheritdoc/>
         </member>
+        <member name="M:Animancer.ClipState.Clone(Animancer.AnimancerPlayable)">
+            <inheritdoc/>
+        </member>
         <member name="M:Animancer.ClipState.CreateDrawer">
             <summary>[Editor-Only] Returns a <see cref="T:Animancer.ClipState.Drawer"/> for this state.</summary>
         </member>
@@ -7176,7 +7327,7 @@
             
              <exception cref="T:System.ArgumentOutOfRangeException">
              More states have been created for the <see cref="P:Animancer.AnimancerState.Clip"/> than the
-             <see cref="P:Animancer.AnimancerLayer.MaxStateDepth"/> allows.
+             <see cref="P:Animancer.AnimancerLayer.MaxCloneCount"/> allows.
              </exception>
         </member>
         <member name="F:Animancer.FadeMode.FixedDuration">
@@ -7297,6 +7448,12 @@
             <summary>Should the `binding` be skipped when determining how to map the <see cref="P:Animancer.PlayableAssetState.Bindings"/>?</summary>
         </member>
         <member name="M:Animancer.PlayableAssetState.Destroy">
+            <inheritdoc/>
+        </member>
+        <member name="M:Animancer.PlayableAssetState.Clone(Animancer.AnimancerPlayable)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Animancer.PlayableAssetState.Animancer#ICopyable{Animancer#PlayableAssetState}#CopyFrom(Animancer.PlayableAssetState)">
             <inheritdoc/>
         </member>
         <member name="M:Animancer.PlayableAssetState.AppendDetails(System.Text.StringBuilder,System.String)">
@@ -7840,14 +7997,14 @@
         <member name="F:Animancer.OptionalWarning.ProOnly">
             <summary>
             A <see href="https://kybernetik.com.au/animancer/docs/introduction/features">Pro-Only Feature</see> has been
-            used in <see href="https://kybernetik.com.au/animancer/lite">Animancer Lite</see>.
+            used in <see href="https://kybernetik.com.au/animancer/redirect/lite">Animancer Lite</see>.
             </summary>
             
             <remarks>
             Some <see href="https://kybernetik.com.au/animancer/docs/introduction/features">Features</see> are only
-            available in <see href="https://kybernetik.com.au/animancer/pro">Animancer Pro</see>.
+            available in <see href="https://kybernetik.com.au/animancer/redirect/pro">Animancer Pro</see>.
             <para></para>
-            <see href="https://kybernetik.com.au/animancer/lite">Animancer Lite</see> allows you to try out those
+            <see href="https://kybernetik.com.au/animancer/redirect/lite">Animancer Lite</see> allows you to try out those
             features in the Unity Editor and gives this warning the first time each one is used to inform you that they
             will not work in runtime builds.
             </remarks>
@@ -7880,6 +8037,16 @@
             <remarks>
             <see cref="F:UnityEngine.EventType.Layout"/> and <see cref="F:UnityEngine.EventType.Repaint"/> should display the current details of
             things, but they should not modify things.
+            </remarks>
+        </member>
+        <member name="F:Animancer.OptionalWarning.AnimatorDisabled">
+            <summary>
+            The <see cref="!:AnimancerComponent.Animator"/> is disabled so Animancer won't be able to play animations.
+            </summary>
+            
+            <remarks>
+            The <see cref="T:UnityEngine.Animator"/> doesn't need an Animator Controller, it just needs to be enabled via the
+            checkbox in the Inspector or by setting <c>animancerComponent.Animator.enabled = true;</c> in code.
             </remarks>
         </member>
         <member name="F:Animancer.OptionalWarning.NativeControllerHumanoid">
@@ -8021,11 +8188,11 @@
         </member>
         <member name="F:Animancer.OptionalWarning.MixerMinChildren">
             <summary>
-            A <see cref="T:Animancer.MixerState"/> is being initialized with its <see cref="P:Animancer.AnimancerNode.ChildCount"/> &lt;= 1.
+            A <see cref="T:Animancer.ManualMixerState"/> is being initialized with its <see cref="P:Animancer.AnimancerNode.ChildCount"/> &lt;= 1.
             </summary>
             
             <remarks>
-            The purpose of a mixer is to mix multiple child states so you are probably initialising it with incorrect
+            The purpose of a mixer is to mix multiple child states so you are probably initializing it with incorrect
             parameters.
             <para></para>
             A mixer with only one child will simply play that child, so feel free to disable this warning if that is
@@ -8034,7 +8201,7 @@
         </member>
         <member name="F:Animancer.OptionalWarning.MixerSynchronizeZeroLength">
             <summary>
-            A <see cref="T:Animancer.MixerState"/> is synchronizing a child with <see cref="P:Animancer.AnimancerState.Length"/> = 0.
+            A <see cref="T:Animancer.ManualMixerState"/> is synchronizing a child with <see cref="P:Animancer.AnimancerState.Length"/> = 0.
             </summary>
             
             <remarks>
@@ -8104,15 +8271,16 @@
             Doing this will replace Animancer's output so its animations would not work anymore.
             </remarks>
         </member>
-        <member name="F:Animancer.OptionalWarning.MaxStateDepth">
+        <member name="F:Animancer.OptionalWarning.CloneComplexState">
             <summary>
-            <see cref="M:Animancer.AnimancerLayer.GetOrCreateWeightlessState(Animancer.AnimancerState)"/> has created too many clones of a particular state.
+            <see cref="M:Animancer.AnimancerLayer.GetOrCreateWeightlessState(Animancer.AnimancerState)"/> is cloning a complex state such as a
+            <see cref="T:Animancer.ManualMixerState"/> or <see cref="T:Animancer.ControllerState"/>. This has a larger performance cost than cloning
+            a <see cref="T:Animancer.ClipState"/> and these states generally have parameters that need to be controlled which may
+            result in undesired behaviour if your scripts are only expecting to have one state to control.
             </summary>
             <remarks>
-            <see cref="M:Animancer.AnimancerLayer.SetMaxStateDepth(System.Int32)"/> can be used to increase the allowed number of clones.
-            <para></para>
             The <see href="https://kybernetik.com.au/animancer/docs/manual/blending/fading/modes">Fade Modes</see> page
-            explains how this system works in more detail.
+            explains why clones are created.
             </remarks>
         </member>
         <member name="F:Animancer.OptionalWarning.All">
@@ -8191,7 +8359,7 @@
             <summary>[Assert-Conditional] Throws if the `node`'s <see cref="T:UnityEngine.Playables.Playable"/> is invalid.</summary>
             <exception cref="T:System.InvalidOperationException"/>
         </member>
-        <member name="M:Animancer.Validate.AssertCanRemoveChild(Animancer.AnimancerState,System.Collections.Generic.IList{Animancer.AnimancerState})">
+        <member name="M:Animancer.Validate.AssertCanRemoveChild(Animancer.AnimancerState,System.Collections.Generic.IList{Animancer.AnimancerState},System.Int32)">
             <summary>[Assert-Conditional]
             Throws if the `state` was not actually assigned to its specified <see cref="P:Animancer.AnimancerNode.Index"/> in
             the `states`.
@@ -8216,7 +8384,7 @@
             Ensures that only 1 speed can be used (warn in Editor, enforce at Runtime).
             </summary>
         </member>
-        <member name="M:Animancer.Validate.LiteTime(System.Single@,System.Object)">
+        <member name="M:Animancer.Validate.LiteTime(System.Double@,System.Object)">
             <summary>[Internal] [Lite-Only]
             Ensures that only 0 time can be used (warn in Editor, enforce at Runtime).
             </summary>
@@ -8284,6 +8452,60 @@
         <member name="T:Animancer.PolymorphicAttribute">
             <summary>The attributed field will be drawn by a <see cref="T:Animancer.Editor.PolymorphicDrawer"/>.</summary>
         </member>
+        <member name="T:Animancer.SimpleTimer">
+            <summary>A very simple timer system based on a <see cref="T:System.Diagnostics.Stopwatch"/>.</summary>
+        </member>
+        <member name="F:Animancer.SimpleTimer.Stopwatch">
+            <summary>The system used to track time.</summary>
+        </member>
+        <member name="P:Animancer.SimpleTimer.CurrentTime">
+            <summary>The amount of time that has passed (in seconds) since the first timer was started.</summary>
+        </member>
+        <member name="F:Animancer.SimpleTimer.name">
+            <summary>An optional prefix for <see cref="M:Animancer.SimpleTimer.ToString"/>.</summary>
+        </member>
+        <member name="F:Animancer.SimpleTimer.startTime">
+            <summary>The <see cref="P:Animancer.SimpleTimer.CurrentTime"/> from when this timer instance was started.</summary>
+        </member>
+        <member name="F:Animancer.SimpleTimer.total">
+            <summary>The total amount of time this timer instance has been running (in seconds).</summary>
+        </member>
+        <member name="F:Animancer.SimpleTimer.Format">
+            <summary>The number format used by <see cref="M:Animancer.SimpleTimer.ToString"/>.</summary>
+        </member>
+        <member name="P:Animancer.SimpleTimer.IsStarted">
+            <summary>Has <see cref="M:Animancer.SimpleTimer.Start"/> been called and <see cref="M:Animancer.SimpleTimer.Stop"/> not?</summary>
+        </member>
+        <member name="M:Animancer.SimpleTimer.#ctor(System.String)">
+            <summary>Creates a new <see cref="T:Animancer.SimpleTimer"/> with the specified `name`.</summary>
+            <remarks>
+            You will need to call <see cref="M:Animancer.SimpleTimer.Start"/> to start the timer. Or use the static
+            <see cref="M:Animancer.SimpleTimer.Start(System.String)"/>
+            </remarks>
+        </member>
+        <member name="M:Animancer.SimpleTimer.Start(System.String)">
+            <summary>Creates a new <see cref="T:Animancer.SimpleTimer"/> with the specified `name` and starts it.</summary>
+        </member>
+        <member name="M:Animancer.SimpleTimer.Start">
+            <summary>
+            Stores the <see cref="P:Animancer.SimpleTimer.CurrentTime"/> in <see cref="F:Animancer.SimpleTimer.startTime"/> so that <see cref="M:Animancer.SimpleTimer.Stop"/> will be able to
+            calculate how much time has passed.
+            </summary>
+            <remarks>Does nothing if the <see cref="F:Animancer.SimpleTimer.startTime"/> was already set.</remarks>
+        </member>
+        <member name="M:Animancer.SimpleTimer.Stop">
+            <summary>
+            Adds the amount of time that has passed since the <see cref="F:Animancer.SimpleTimer.startTime"/> to the <see cref="F:Animancer.SimpleTimer.total"/> and
+            clears the <see cref="F:Animancer.SimpleTimer.startTime"/>.
+            </summary>
+            <remarks>Does nothing if the <see cref="F:Animancer.SimpleTimer.startTime"/> was already cleared (or not set).</remarks>
+        </member>
+        <member name="M:Animancer.SimpleTimer.ToString">
+            <summary>Calls <see cref="M:Animancer.SimpleTimer.Stop"/> and returns a string representation of the <see cref="F:Animancer.SimpleTimer.total"/>.</summary>
+        </member>
+        <member name="M:Animancer.SimpleTimer.Dispose">
+            <summary>Calls <see cref="M:Animancer.SimpleTimer.ToString"/> and logs the result.</summary>
+        </member>
         <member name="T:Animancer.Strings">
             <summary>Various string constants used throughout <see cref="N:Animancer"/>.</summary>
             https://kybernetik.com.au/animancer/api/Animancer/Strings
@@ -8331,6 +8553,9 @@
         <member name="F:Animancer.Strings.MustBeFinite">
             <summary>An error message for when <see cref="M:Animancer.AnimancerUtilities.IsFinite(System.Single)"/> fails.</summary>
         </member>
+        <member name="F:Animancer.Strings.AnimatorDisabledMessage">
+            <summary>[Assert-Only] A message for <see cref="F:Animancer.OptionalWarning.AnimatorDisabled"/>.</summary>
+        </member>
         <member name="T:Animancer.Strings.DocsURLs">
             <summary>URLs of various documentation pages.</summary>
             https://kybernetik.com.au/animancer/api/Animancer/DocsURLs
@@ -8347,6 +8572,9 @@
         </member>
         <member name="F:Animancer.Strings.DocsURLs.DeveloperEmail">
             <summary>The email address which handles support for Animancer.</summary>
+        </member>
+        <member name="F:Animancer.Strings.DocsURLs.LatestVersion">
+            <summary>The URL of the file which lists Animancer's latest version.</summary>
         </member>
         <member name="T:Animancer.Strings.Tooltips">
             <summary>Tooltips for various fields.</summary>
@@ -8458,6 +8686,7 @@
         <member name="T:Animancer.ICopyable`1">
             <summary>Interface for objects that can be copied.</summary>
             https://kybernetik.com.au/animancer/api/Animancer/ICopyable_1
+            https://kybernetik.com.au/flexi-motion/api/FlexiMotion/ICopyable_1
             
         </member>
         <member name="M:Animancer.ICopyable`1.CopyFrom(`0)">
@@ -8486,7 +8715,7 @@
         <member name="T:Animancer.IHasKey">
             <summary>Exposes a <see cref="P:Animancer.IHasKey.Key"/> object that can be used for dictionaries and hash sets.</summary>
             <remarks>
-            Documentation: <see href="https://kybernetik.com.au/animancer/docs/manual/playing/states#keys">Keys</see>
+            Documentation: <see href="https://kybernetik.com.au/animancer/docs/manual/playing/keys">Keys</see>
             </remarks>
             https://kybernetik.com.au/animancer/api/Animancer/IHasKey
             
@@ -8501,11 +8730,11 @@
         </member>
         <member name="P:Animancer.IMotion.AverageAngularSpeed">
             <summary>The initial <see cref="P:UnityEngine.Motion.averageAngularSpeed"/> that the created state will have.</summary>
-            <remarks>The actual average can vary in states like <see cref="T:Animancer.MixerState"/>.</remarks>
+            <remarks>The actual average can vary in states like <see cref="T:Animancer.ManualMixerState"/>.</remarks>
         </member>
         <member name="P:Animancer.IMotion.AverageVelocity">
             <summary>The initial <see cref="P:UnityEngine.Motion.averageSpeed"/> that the created state will have.</summary>
-            <remarks>The actual average can vary in states like <see cref="T:Animancer.MixerState"/>.</remarks>
+            <remarks>The actual average can vary in states like <see cref="T:Animancer.ManualMixerState"/>.</remarks>
         </member>
         <member name="T:Animancer.IPlayableWrapper">
             <summary>Interface for objects that manage a <see cref="T:UnityEngine.Playables.Playable"/>.</summary>
@@ -8669,7 +8898,7 @@
         </member>
         <member name="P:Animancer.ITransitionDetailed.MaximumDuration">
             <summary>The maximum amount of time the animation is expected to take (in seconds).</summary>
-            <remarks>The actual duration can vary in states like <see cref="T:Animancer.MixerState"/>.</remarks>
+            <remarks>The actual duration can vary in states like <see cref="T:Animancer.ManualMixerState"/>.</remarks>
         </member>
         <member name="P:Animancer.ITransitionDetailed.Speed">
             <summary>The <see cref="P:Animancer.AnimancerNode.Speed"/> to play the animation at.</summary>
@@ -8771,9 +9000,15 @@
         </member>
         <member name="M:Animancer.CartesianMixerState.ForceRecalculateWeights">
             <summary>
-            Recalculates the weights of all <see cref="P:Animancer.MixerState.ChildStates"/> based on the current value of the
+            Recalculates the weights of all <see cref="P:Animancer.ManualMixerState.ChildStates"/> based on the current value of the
             <see cref="P:Animancer.MixerState`1.Parameter"/> and the <see cref="F:Animancer.MixerState`1._Thresholds"/>.
             </summary>
+        </member>
+        <member name="M:Animancer.CartesianMixerState.Clone(Animancer.AnimancerPlayable)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Animancer.CartesianMixerState.Animancer#ICopyable{Animancer#CartesianMixerState}#CopyFrom(Animancer.CartesianMixerState)">
+            <inheritdoc/>
         </member>
         <member name="M:Animancer.CartesianMixerState.AppendParameter(System.Text.StringBuilder,UnityEngine.Vector2)">
             <inheritdoc/>
@@ -8835,9 +9070,15 @@
         </member>
         <member name="M:Animancer.DirectionalMixerState.ForceRecalculateWeights">
             <summary>
-            Recalculates the weights of all <see cref="P:Animancer.MixerState.ChildStates"/> based on the current value of the
+            Recalculates the weights of all <see cref="P:Animancer.ManualMixerState.ChildStates"/> based on the current value of the
             <see cref="P:Animancer.MixerState`1.Parameter"/> and the thresholds.
             </summary>
+        </member>
+        <member name="M:Animancer.DirectionalMixerState.Clone(Animancer.AnimancerPlayable)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Animancer.DirectionalMixerState.Animancer#ICopyable{Animancer#DirectionalMixerState}#CopyFrom(Animancer.DirectionalMixerState)">
+            <inheritdoc/>
         </member>
         <member name="M:Animancer.DirectionalMixerState.AppendParameter(System.Text.StringBuilder,UnityEngine.Vector2)">
             <inheritdoc/>
@@ -8882,23 +9123,11 @@
         <member name="M:Animancer.LinearMixerState.GetParameterError(System.Single)">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.LinearMixerState.Initialize(UnityEngine.AnimationClip[],System.Single,System.Single)">
-            <summary>
-            Initializes the <see cref="T:UnityEngine.Animations.AnimationMixerPlayable"/> and <see cref="F:Animancer.ManualMixerState._Children"/> with one
-            state per clip and assigns thresholds evenly spaced between the specified min and max (inclusive).
-            </summary>
+        <member name="M:Animancer.LinearMixerState.Clone(Animancer.AnimancerPlayable)">
+            <inheritdoc/>
         </member>
-        <member name="M:Animancer.LinearMixerState.Initialize(UnityEngine.AnimationClip,UnityEngine.AnimationClip,System.Single,System.Single)">
-            <summary>
-            Initializes the <see cref="T:UnityEngine.Animations.AnimationMixerPlayable"/> with two ports and connects two states to them for
-            the specified clips at the specified thresholds (default 0 and 1).
-            </summary>
-        </member>
-        <member name="M:Animancer.LinearMixerState.Initialize(UnityEngine.AnimationClip,UnityEngine.AnimationClip,UnityEngine.AnimationClip,System.Single,System.Single,System.Single)">
-            <summary>
-            Initializes the <see cref="T:UnityEngine.Animations.AnimationMixerPlayable"/> with three ports and connects three states to them for
-            the specified clips at the specified thresholds (default -1, 0, and 1).
-            </summary>
+        <member name="M:Animancer.LinearMixerState.Animancer#ICopyable{Animancer#LinearMixerState}#CopyFrom(Animancer.LinearMixerState)">
+            <inheritdoc/>
         </member>
         <member name="M:Animancer.LinearMixerState.OnThresholdsChanged">
             <summary>
@@ -8917,7 +9146,7 @@
         </member>
         <member name="M:Animancer.LinearMixerState.ForceRecalculateWeights">
             <summary>
-            Recalculates the weights of all <see cref="F:Animancer.ManualMixerState._Children"/> based on the current value of the
+            Recalculates the weights of all <see cref="P:Animancer.ManualMixerState.ChildStates"/> based on the
             <see cref="P:Animancer.MixerState`1.Parameter"/> and the thresholds.
             </summary>
         </member>
@@ -8960,8 +9189,8 @@
         </member>
         <member name="T:Animancer.ManualMixerState">
             <summary>[Pro-Only]
-            An <see cref="T:Animancer.AnimancerState"/> which blends multiple child states. Unlike other mixers, this class does not
-            perform any automatic weight calculations, it simple allows you to control the weight of all states manually.
+            An <see cref="T:Animancer.AnimancerState"/> which blends multiple child states by allowing you to control their
+            <see cref="P:Animancer.AnimancerNode.Weight"/> manually.
             </summary>
             <remarks>
             This mixer type is similar to the Direct Blend Type in Mecanim Blend Trees.
@@ -8972,18 +9201,45 @@
             </remarks>
             https://kybernetik.com.au/animancer/api/Animancer/ManualMixerState
             
+            https://kybernetik.com.au/animancer/api/Animancer/ManualMixerState
         </member>
         <member name="T:Animancer.ManualMixerState.ITransition">
             <summary>An <see cref="T:Animancer.ITransition`1"/> that creates a <see cref="T:Animancer.ManualMixerState"/>.</summary>
         </member>
-        <member name="F:Animancer.ManualMixerState._Children">
-            <summary>The states managed by this mixer.</summary>
+        <member name="T:Animancer.ManualMixerState.ITransition2D">
+            <summary>
+            An <see cref="T:Animancer.ITransition`1"/> that creates a <see cref="T:Animancer.MixerState`1"/> for
+            <see cref="T:UnityEngine.Vector2"/>.
+            </summary>
+        </member>
+        <member name="P:Animancer.ManualMixerState.KeepChildrenConnected">
+            <summary>Returns true because mixers should always keep child playables connected to the graph.</summary>
+        </member>
+        <member name="P:Animancer.ManualMixerState.Clip">
+            <summary>A <see cref="T:Animancer.ManualMixerState"/> has no <see cref="T:UnityEngine.AnimationClip"/>.</summary>
         </member>
         <member name="P:Animancer.ManualMixerState.ChildStates">
-            <summary>Returns the array of <see cref="F:Animancer.ManualMixerState._Children"/>.</summary>
+            <summary>The states connected to this mixer.</summary>
+            <remarks>Only states up to the <see cref="P:Animancer.ManualMixerState.ChildCount"/> should be assigned.</remarks>
         </member>
         <member name="P:Animancer.ManualMixerState.ChildCount">
             <inheritdoc/>
+        </member>
+        <member name="P:Animancer.ManualMixerState.ChildCapacity">
+            <summary>The size of the internal array of <see cref="P:Animancer.ManualMixerState.ChildStates"/>.</summary>
+            <remarks>This value starts at 0 then expands to <see cref="P:Animancer.ManualMixerState.ChildCapacity"/> when the first child is added.</remarks>
+        </member>
+        <member name="M:Animancer.ManualMixerState.OnChildCapacityChanged">
+            <summary>Called when the <see cref="P:Animancer.ManualMixerState.ChildCapacity"/> is changed.</summary>
+        </member>
+        <member name="P:Animancer.ManualMixerState.DefaultChildCapacity">
+            <summary><see cref="P:Animancer.ManualMixerState.ChildCapacity"/> starts at 0 then expands to this value when the first child is added.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.EnsureRemainingChildCapacity(System.Int32)">
+            <summary>
+            Ensures that the remaining unused <see cref="P:Animancer.ManualMixerState.ChildCapacity"/> is greater than or equal to the
+            `minimumCapacity`.
+            </summary>
         </member>
         <member name="M:Animancer.ManualMixerState.GetChild(System.Int32)">
             <inheritdoc/>
@@ -8991,125 +9247,116 @@
         <member name="M:Animancer.ManualMixerState.GetEnumerator">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.ManualMixerState.Initialize(System.Int32)">
-            <summary>
-            Initializes this mixer with the specified number of children which can be set individually by
-            <see cref="M:Animancer.MixerState.CreateChild(System.Int32,UnityEngine.AnimationClip)"/> and <see cref="M:Animancer.MixerState.SetChild(System.Int32,Animancer.AnimancerState)"/>.
-            </summary>
-            <remarks><see cref="M:Animancer.AnimancerState.Destroy"/> will be called on any existing children.</remarks>
-        </member>
-        <member name="M:Animancer.ManualMixerState.Initialize(UnityEngine.AnimationClip[])">
-            <summary>Initializes this mixer with one state per clip.</summary>
-        </member>
-        <member name="M:Animancer.ManualMixerState.Initialize(UnityEngine.Object[])">
-            <summary>
-            Initializes this mixer by calling <see cref="M:Animancer.MixerState.CreateChild(System.Int32,UnityEngine.Object)"/> for each of the
-            `states`.
-            </summary>
-        </member>
-        <member name="T:Animancer.MixerState">
-            <summary>[Pro-Only] Base class for <see cref="T:Animancer.AnimancerState"/>s which blend other states together.</summary>
-            <remarks>
-            Documentation: <see href="https://kybernetik.com.au/animancer/docs/manual/blending/mixers">Mixers</see>
-            </remarks>
-            https://kybernetik.com.au/animancer/api/Animancer/MixerState
-            
-            https://kybernetik.com.au/animancer/api/Animancer/MixerState
-        </member>
-        <member name="T:Animancer.MixerState.ITransition2D">
-            <summary>An <see cref="T:Animancer.ITransition`1"/> that creates a <see cref="T:Animancer.MixerState`1"/> for <see cref="T:UnityEngine.Vector2"/>.</summary>
-        </member>
-        <member name="P:Animancer.MixerState.KeepChildrenConnected">
-            <summary>Returns true because mixers should always keep child playables connected to the graph.</summary>
-        </member>
-        <member name="P:Animancer.MixerState.Clip">
-            <summary>A <see cref="T:Animancer.MixerState"/> has no <see cref="T:UnityEngine.AnimationClip"/>.</summary>
-        </member>
-        <member name="P:Animancer.MixerState.ChildStates">
-            <summary>Returns the collection of states connected to this mixer. Note that some elements may be null.</summary>
-            <remarks>
-            Getting an enumerator that automatically skips over null states is slower and creates garbage, so
-            internally we use this property and perform null checks manually even though it increases the code
-            complexity a bit.
-            </remarks>
-        </member>
-        <member name="P:Animancer.MixerState.ChildCount">
+        <member name="M:Animancer.ManualMixerState.OnSetIsPlaying">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.GetChild(System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Animancer.MixerState.GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="M:Animancer.MixerState.OnSetIsPlaying">
-            <inheritdoc/>
-        </member>
-        <member name="P:Animancer.MixerState.IsLooping">
+        <member name="P:Animancer.ManualMixerState.IsLooping">
             <summary>Are any child states looping?</summary>
         </member>
-        <member name="P:Animancer.MixerState.RawTime">
+        <member name="P:Animancer.ManualMixerState.RawTime">
             <summary>
             The weighted average <see cref="P:Animancer.AnimancerState.Time"/> of each child state according to their
             <see cref="P:Animancer.AnimancerNode.Weight"/>.
             </summary>
             <remarks>
-            If there are any <see cref="P:Animancer.MixerState.SynchronizedChildren"/>, only those states will be included in the getter
+            If there are any <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/>, only those states will be included in the getter
             calculation.
             </remarks>
         </member>
-        <member name="M:Animancer.MixerState.MoveTime(System.Single,System.Boolean)">
+        <member name="M:Animancer.ManualMixerState.MoveTime(System.Double,System.Boolean)">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.GetSynchronizedTimeDetails(System.Single@,System.Single@,System.Single@)">
-            <summary>Gets the time details based on the <see cref="P:Animancer.MixerState.SynchronizedChildren"/>.</summary>
+        <member name="M:Animancer.ManualMixerState.GetSynchronizedTimeDetails(System.Single@,System.Single@,System.Single@)">
+            <summary>Gets the time details based on the <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/>.</summary>
         </member>
-        <member name="M:Animancer.MixerState.GetTimeDetails(System.Single@,System.Single@,System.Single@)">
+        <member name="M:Animancer.ManualMixerState.GetTimeDetails(System.Single@,System.Single@,System.Single@)">
             <summary>Gets the time details based on all child states.</summary>
         </member>
-        <member name="P:Animancer.MixerState.Length">
+        <member name="P:Animancer.ManualMixerState.Length">
             <summary>
             The weighted average <see cref="P:Animancer.AnimancerState.Length"/> of each child state according to their
             <see cref="P:Animancer.AnimancerNode.Weight"/>.
             </summary>
         </member>
-        <member name="M:Animancer.MixerState.#ctor">
-            <summary>Creates a new <see cref="T:Animancer.MixerState"/>.</summary>
+        <member name="M:Animancer.ManualMixerState.#ctor">
+            <summary>Creates a new <see cref="T:Animancer.ManualMixerState"/>.</summary>
         </member>
-        <member name="M:Animancer.MixerState.CreatePlayable(UnityEngine.Playables.Playable@)">
+        <member name="M:Animancer.ManualMixerState.CreatePlayable(UnityEngine.Playables.Playable@)">
             <summary>Creates and assigns the <see cref="T:UnityEngine.Animations.AnimationMixerPlayable"/> managed by this state.</summary>
         </member>
-        <member name="M:Animancer.MixerState.CreateChild(System.Int32,UnityEngine.AnimationClip)">
-            <summary>
-            Creates and returns a new <see cref="T:Animancer.ClipState"/> to play the `clip` with this mixer as its parent.
-            </summary>
-        </member>
-        <member name="M:Animancer.MixerState.CreateChild(System.Int32,Animancer.ITransition)">
-            <summary>
-            Calls <see cref="M:Animancer.AnimancerUtilities.CreateStateAndApply(Animancer.ITransition,Animancer.AnimancerPlayable)"/> and sets this mixer as the state's parent.
-            </summary>
-        </member>
-        <member name="M:Animancer.MixerState.CreateChild(System.Int32,UnityEngine.Object)">
-            <summary>Calls <see cref="M:Animancer.MixerState.CreateChild(System.Int32,UnityEngine.AnimationClip)"/> or <see cref="M:Animancer.MixerState.CreateChild(System.Int32,Animancer.ITransition)"/>.</summary>
-        </member>
-        <member name="M:Animancer.MixerState.SetChild(System.Int32,Animancer.AnimancerState)">
-            <summary>Assigns the `state` as a child of this mixer.</summary>
-        </member>
-        <member name="M:Animancer.MixerState.OnAddChild(Animancer.AnimancerState)">
+        <member name="M:Animancer.ManualMixerState.OnAddChild(Animancer.AnimancerState)">
             <summary>Connects the `state` to this mixer at its <see cref="P:Animancer.AnimancerNode.Index"/>.</summary>
         </member>
-        <member name="M:Animancer.MixerState.OnRemoveChild(Animancer.AnimancerState)">
+        <member name="M:Animancer.ManualMixerState.OnRemoveChild(Animancer.AnimancerState)">
             <summary>Disconnects the `state` from this mixer at its <see cref="P:Animancer.AnimancerNode.Index"/>.</summary>
         </member>
-        <member name="M:Animancer.MixerState.Destroy">
+        <member name="M:Animancer.ManualMixerState.Destroy">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.DestroyChildren">
+        <member name="M:Animancer.ManualMixerState.Clone(Animancer.AnimancerPlayable)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Animancer#ICopyable{Animancer#ManualMixerState}#CopyFrom(Animancer.ManualMixerState)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Add(Animancer.AnimancerState)">
+            <summary>Assigns the `state` as a child of this mixer.</summary>
+            <remarks>The `state` must not be null. To remove a child, call <see cref="M:Animancer.ManualMixerState.Remove(System.Int32,System.Boolean)"/> instead.</remarks>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Add(UnityEngine.AnimationClip)">
+            <summary>Creates and returns a new <see cref="T:Animancer.ClipState"/> to play the `clip` as a child of this mixer.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Add(Animancer.ITransition)">
+            <summary>Calls <see cref="M:Animancer.AnimancerUtilities.CreateStateAndApply(Animancer.ITransition,Animancer.AnimancerPlayable)"/> then <see cref="M:Animancer.ManualMixerState.Add(Animancer.AnimancerState)"/>.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Add(System.Object)">
+            <summary>Calls one of the other <see cref="M:Animancer.ManualMixerState.Add(System.Object)"/> overloads as appropriate for the `child`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.AddRange(System.Collections.Generic.IList{UnityEngine.AnimationClip})">
+            <summary>Calls <see cref="M:Animancer.ManualMixerState.Add(UnityEngine.AnimationClip)"/> for each of the `clips`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.AddRange(UnityEngine.AnimationClip[])">
+            <summary>Calls <see cref="M:Animancer.ManualMixerState.Add(UnityEngine.AnimationClip)"/> for each of the `clips`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.AddRange(System.Collections.Generic.IList{Animancer.ITransition})">
+            <summary>Calls <see cref="M:Animancer.ManualMixerState.Add(Animancer.ITransition)"/> for each of the `transitions`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.AddRange(Animancer.ITransition[])">
+            <summary>Calls <see cref="M:Animancer.ManualMixerState.Add(Animancer.ITransition)"/> for each of the `clips`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.AddRange(System.Collections.Generic.IList{System.Object})">
+            <summary>Calls <see cref="M:Animancer.ManualMixerState.Add(System.Object)"/> for each of the `children`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.AddRange(System.Object[])">
+            <summary>Calls <see cref="M:Animancer.ManualMixerState.Add(System.Object)"/> for each of the `clips`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Remove(System.Int32,System.Boolean)">
+            <summary>Removes the child at the specified `index`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Remove(Animancer.AnimancerState,System.Boolean)">
+            <summary>Removes the specified `child`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Set(System.Int32,Animancer.AnimancerState,System.Boolean)">
+            <summary>Replaces the `child` at the specified `index`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Set(System.Int32,UnityEngine.AnimationClip,System.Boolean)">
+            <summary>Replaces the child at the specified `index` with a new <see cref="T:Animancer.ClipState"/>.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Set(System.Int32,Animancer.ITransition,System.Boolean)">
+            <summary>Replaces the child at the specified `index` with a <see cref="M:Animancer.ITransition.CreateState"/>.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.Set(System.Int32,System.Object,System.Boolean)">
+            <summary>Calls one of the other <see cref="M:Animancer.ManualMixerState.Set(System.Int32,System.Object,System.Boolean)"/> overloads as appropriate for the `child`.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.IndexOf(Animancer.AnimancerState)">
+            <summary>Returns the index of the specified `child` state.</summary>
+        </member>
+        <member name="M:Animancer.ManualMixerState.DestroyChildren">
             <summary>
-            Destroys all <see cref="P:Animancer.MixerState.ChildStates"/> connected to this mixer. This operation cannot be undone.
+            Destroys all <see cref="P:Animancer.ManualMixerState.ChildStates"/> connected to this mixer. This operation cannot be undone.
             </summary>
         </member>
-        <member name="M:Animancer.MixerState.CreatePlayable``1(Animancer.AnimancerPlayable,``0,System.Boolean)">
+        <member name="M:Animancer.ManualMixerState.CreatePlayable``1(Animancer.AnimancerPlayable,``0,System.Boolean)">
             <summary>
             Creates an <see cref="T:UnityEngine.Animations.AnimationScriptPlayable"/> to run the specified Animation Job instead of the usual
             <see cref="T:UnityEngine.Animations.AnimationMixerPlayable"/>.
@@ -9121,10 +9368,10 @@
             mixer.CreatePlayable(animancer, job);
             // Use mixer.Initialize, CreateChild, and SetChild to configure the children as normal.
             </code>
-            See also: <seealso cref="M:Animancer.MixerState.CreatePlayable``1(UnityEngine.Playables.Playable@,``0,System.Boolean)"/>
+            See also: <seealso cref="M:Animancer.ManualMixerState.CreatePlayable``1(UnityEngine.Playables.Playable@,``0,System.Boolean)"/>
             </example>
         </member>
-        <member name="M:Animancer.MixerState.CreatePlayable``1(UnityEngine.Playables.Playable@,``0,System.Boolean)">
+        <member name="M:Animancer.ManualMixerState.CreatePlayable``1(UnityEngine.Playables.Playable@,``0,System.Boolean)">
             <summary>
             Creates an <see cref="T:UnityEngine.Animations.AnimationScriptPlayable"/> to run the specified Animation Job instead of the usual
             <see cref="T:UnityEngine.Animations.AnimationMixerPlayable"/>.
@@ -9154,221 +9401,212 @@
                 }
             }
             </code>
-            See also: <seealso cref="M:Animancer.MixerState.CreatePlayable``1(Animancer.AnimancerPlayable,``0,System.Boolean)"/>
+            See also: <seealso cref="M:Animancer.ManualMixerState.CreatePlayable``1(Animancer.AnimancerPlayable,``0,System.Boolean)"/>
             </example>
         </member>
-        <member name="M:Animancer.MixerState.GetJobData``1">
+        <member name="M:Animancer.ManualMixerState.GetJobData``1">
             <summary>
             Gets the Animation Job data from the <see cref="T:UnityEngine.Animations.AnimationScriptPlayable"/>.
             </summary>
             <exception cref="T:System.InvalidCastException">
-            This mixer was not initialized using <see cref="M:Animancer.MixerState.CreatePlayable``1(Animancer.AnimancerPlayable,``0,System.Boolean)"/>
-            or <see cref="M:Animancer.MixerState.CreatePlayable``1(UnityEngine.Playables.Playable@,``0,System.Boolean)"/>.
+            This mixer was not initialized using <see cref="M:Animancer.ManualMixerState.CreatePlayable``1(Animancer.AnimancerPlayable,``0,System.Boolean)"/>
+            or <see cref="M:Animancer.ManualMixerState.CreatePlayable``1(UnityEngine.Playables.Playable@,``0,System.Boolean)"/>.
             </exception>
         </member>
-        <member name="M:Animancer.MixerState.SetJobData``1(``0)">
+        <member name="M:Animancer.ManualMixerState.SetJobData``1(``0)">
             <summary>
             Sets the Animation Job data in the <see cref="T:UnityEngine.Animations.AnimationScriptPlayable"/>.
             </summary>
             <exception cref="T:System.InvalidCastException">
-            This mixer was not initialized using <see cref="M:Animancer.MixerState.CreatePlayable``1(Animancer.AnimancerPlayable,``0,System.Boolean)"/>
-            or <see cref="M:Animancer.MixerState.CreatePlayable``1(UnityEngine.Playables.Playable@,``0,System.Boolean)"/>.
+            This mixer was not initialized using <see cref="M:Animancer.ManualMixerState.CreatePlayable``1(Animancer.AnimancerPlayable,``0,System.Boolean)"/>
+            or <see cref="M:Animancer.ManualMixerState.CreatePlayable``1(UnityEngine.Playables.Playable@,``0,System.Boolean)"/>.
             </exception>
         </member>
-        <member name="M:Animancer.MixerState.Update(System.Boolean@)">
+        <member name="M:Animancer.ManualMixerState.Update(System.Boolean@)">
             <summary>Updates the time of this mixer and all of its child states.</summary>
         </member>
-        <member name="P:Animancer.MixerState.WeightsAreDirty">
-            <summary>Indicates whether the weights of all child states should be recalculated.</summary>
+        <member name="P:Animancer.ManualMixerState.WeightsAreDirty">
+            <summary>Should the weights of all child states be recalculated?</summary>
         </member>
-        <member name="M:Animancer.MixerState.RecalculateWeights">
+        <member name="M:Animancer.ManualMixerState.RecalculateWeights">
             <summary>
-            If <see cref="P:Animancer.MixerState.WeightsAreDirty"/> this method recalculates the weights of all child states and returns true.
+            If <see cref="P:Animancer.ManualMixerState.WeightsAreDirty"/> this method recalculates the weights of all child states and returns true.
             </summary>
         </member>
-        <member name="M:Animancer.MixerState.ForceRecalculateWeights">
+        <member name="M:Animancer.ManualMixerState.ForceRecalculateWeights">
             <summary>
             Recalculates the weights of all child states based on the current value of the
             <see cref="P:Animancer.MixerState`1.Parameter"/> and the thresholds.
-            <para></para>
-            Overrides of this method must set <see cref="P:Animancer.MixerState.WeightsAreDirty"/> = false.
             </summary>
+            <remarks>Overrides of this method must set <see cref="P:Animancer.ManualMixerState.WeightsAreDirty"/> = false.</remarks>
         </member>
-        <member name="P:Animancer.MixerState.AutoSynchronizeChildren">
+        <member name="P:Animancer.ManualMixerState.SynchronizeNewChildren">
             <summary>Should newly added children be automatically added to the synchronization list? Default true.</summary>
         </member>
-        <member name="P:Animancer.MixerState.MinimumSynchronizeChildrenWeight">
-            <summary>The minimum total weight of all children for their times to be synchronized (default 0.01).</summary>
+        <member name="P:Animancer.ManualMixerState.MinimumSynchronizeChildrenWeight">
+            <summary>The minimum total weight of all children for their times to be synchronized. Default 0.01.</summary>
         </member>
-        <member name="P:Animancer.MixerState.SynchronizedChildren">
+        <member name="P:Animancer.ManualMixerState.SynchronizedChildren">
             <summary>A copy of the internal list of child states that will have their times synchronized.</summary>
             <remarks>
             If this mixer is a child of another mixer, its synchronized children will be managed by the parent.
             <para></para>
-            The getter allocates a new array if <see cref="P:Animancer.MixerState.SynchronizedChildCount"/> is greater than zero.
+            The getter allocates a new array if <see cref="P:Animancer.ManualMixerState.SynchronizedChildCount"/> is greater than zero.
             </remarks>
         </member>
-        <member name="P:Animancer.MixerState.SynchronizedChildCount">
-            <summary>The number of <see cref="P:Animancer.MixerState.SynchronizedChildren"/>.</summary>
+        <member name="P:Animancer.ManualMixerState.SynchronizedChildCount">
+            <summary>The number of <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/>.</summary>
         </member>
-        <member name="M:Animancer.MixerState.IsSynchronized(Animancer.AnimancerState)">
-            <summary>Is the `state` in the <see cref="P:Animancer.MixerState.SynchronizedChildren"/>?</summary>
+        <member name="M:Animancer.ManualMixerState.IsSynchronized(Animancer.AnimancerState)">
+            <summary>Is the `state` in the <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/>?</summary>
         </member>
-        <member name="M:Animancer.MixerState.Synchronize(Animancer.AnimancerState)">
-            <summary>Adds the `state` to the <see cref="P:Animancer.MixerState.SynchronizedChildren"/>.</summary>
+        <member name="M:Animancer.ManualMixerState.Synchronize(Animancer.AnimancerState)">
+            <summary>Adds the `state` to the <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/>.</summary>
             <remarks>
             The `state` must be a child of this mixer.
             <para></para>
             If this mixer is a child of another mixer, the `state` will be added to the parent's
-            <see cref="P:Animancer.MixerState.SynchronizedChildren"/> instead.
+            <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/> instead.
             </remarks>
         </member>
-        <member name="M:Animancer.MixerState.SynchronizeDirect(Animancer.AnimancerState)">
-            <summary>The internal implementation of <see cref="M:Animancer.MixerState.Synchronize(Animancer.AnimancerState)"/>.</summary>
+        <member name="M:Animancer.ManualMixerState.SynchronizeDirect(Animancer.AnimancerState)">
+            <summary>The internal implementation of <see cref="M:Animancer.ManualMixerState.Synchronize(Animancer.AnimancerState)"/>.</summary>
         </member>
-        <member name="M:Animancer.MixerState.DontSynchronize(Animancer.AnimancerState)">
-            <summary>Removes the `state` from the <see cref="P:Animancer.MixerState.SynchronizedChildren"/>.</summary>
+        <member name="M:Animancer.ManualMixerState.DontSynchronize(Animancer.AnimancerState)">
+            <summary>Removes the `state` from the <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/>.</summary>
         </member>
-        <member name="M:Animancer.MixerState.DontSynchronizeChildren">
-            <summary>Removes all children of this mixer from the <see cref="P:Animancer.MixerState.SynchronizedChildren"/>.</summary>
+        <member name="M:Animancer.ManualMixerState.DontSynchronizeChildren">
+            <summary>Removes all children of this mixer from the <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/>.</summary>
         </member>
-        <member name="M:Animancer.MixerState.InitializeSynchronizedChildren(System.Boolean[])">
-            <summary>Initializes the internal <see cref="P:Animancer.MixerState.SynchronizedChildren"/> list.</summary>
+        <member name="M:Animancer.ManualMixerState.InitializeSynchronizedChildren(System.Boolean[])">
+            <summary>Initializes the internal <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/> list.</summary>
             <remarks>
             The array can be null or empty. Any elements not in the array will be treated as <c>true</c>.
             <para></para>
-            This method can only be called before any <see cref="P:Animancer.MixerState.SynchronizedChildren"/> are added and also before this
+            This method can only be called before any <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/> are added and also before this
             mixer is made the child of another mixer.
             </remarks>
         </member>
-        <member name="M:Animancer.MixerState.GetParentMixer">
+        <member name="M:Animancer.ManualMixerState.GetParentMixer">
             <summary>
-            Returns the highest <see cref="T:Animancer.MixerState"/> in the hierarchy above this mixer or this mixer itself if
+            Returns the highest <see cref="T:Animancer.ManualMixerState"/> in the hierarchy above this mixer or this mixer itself if
             there are none above it.
             </summary>
         </member>
-        <member name="M:Animancer.MixerState.GetParentMixer(Animancer.IPlayableWrapper)">
-            <summary>Returns the highest <see cref="T:Animancer.MixerState"/> in the hierarchy above the `state` (inclusive).</summary>
+        <member name="M:Animancer.ManualMixerState.GetParentMixer(Animancer.IPlayableWrapper)">
+            <summary>Returns the highest <see cref="T:Animancer.ManualMixerState"/> in the hierarchy above the `state` (inclusive).</summary>
         </member>
-        <member name="M:Animancer.MixerState.IsChildOf(Animancer.IPlayableWrapper,Animancer.IPlayableWrapper)">
+        <member name="M:Animancer.ManualMixerState.IsChildOf(Animancer.IPlayableWrapper,Animancer.IPlayableWrapper)">
             <summary>Is the `child` a child of the `parent`?</summary>
         </member>
-        <member name="M:Animancer.MixerState.ApplySynchronizeChildren(System.Boolean@)">
+        <member name="M:Animancer.ManualMixerState.ApplySynchronizeChildren(System.Boolean@)">
             <summary>
-            Synchronizes the <see cref="P:Animancer.AnimancerState.NormalizedTime"/>s of the <see cref="P:Animancer.MixerState.SynchronizedChildren"/> by
+            Synchronizes the <see cref="P:Animancer.AnimancerState.NormalizedTime"/>s of the <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/> by
             modifying their internal playable speeds.
             </summary>
         </member>
-        <member name="M:Animancer.MixerState.CalculateRealEffectiveSpeed">
+        <member name="M:Animancer.ManualMixerState.CalculateRealEffectiveSpeed">
             <summary>
             The multiplied <see cref="M:UnityEngine.Playables.PlayableExtensions.GetSpeed``1(``0)"/> of this mixer and its parents down the
             hierarchy to determine the actual speed its output is being played at.
             </summary>
             <remarks>
             This can be different from the <see cref="P:Animancer.AnimancerNode.EffectiveSpeed"/> because the
-            <see cref="P:Animancer.MixerState.SynchronizedChildren"/> have their playable speed modified without setting their
+            <see cref="P:Animancer.ManualMixerState.SynchronizedChildren"/> have their playable speed modified without setting their
             <see cref="P:Animancer.AnimancerNode.Speed"/>.
             </remarks>
         </member>
-        <member name="P:Animancer.MixerState.ApplyAnimatorIK">
+        <member name="P:Animancer.ManualMixerState.ApplyAnimatorIK">
             <inheritdoc/>
         </member>
-        <member name="P:Animancer.MixerState.ApplyFootIK">
+        <member name="P:Animancer.ManualMixerState.ApplyFootIK">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.CalculateTotalWeight(System.Collections.Generic.IList{Animancer.AnimancerState})">
+        <member name="M:Animancer.ManualMixerState.CalculateTotalWeight(Animancer.AnimancerState[],System.Int32)">
             <summary>Calculates the sum of the <see cref="P:Animancer.AnimancerNode.Weight"/> of all `states`.</summary>
         </member>
-        <member name="M:Animancer.MixerState.SetChildrenTime(System.Single,System.Boolean)">
+        <member name="M:Animancer.ManualMixerState.SetChildrenTime(System.Single,System.Boolean)">
             <summary>
-            Sets <see cref="P:Animancer.AnimancerState.Time"/> for all <see cref="P:Animancer.MixerState.ChildStates"/>.
+            Sets <see cref="P:Animancer.AnimancerState.Time"/> for all <see cref="P:Animancer.ManualMixerState.ChildStates"/>.
             </summary>
         </member>
-        <member name="M:Animancer.MixerState.DisableRemainingStates(System.Int32)">
-            <summary>
-            Sets the weight of all states after the `previousIndex` to 0.
-            </summary>
+        <member name="M:Animancer.ManualMixerState.DisableRemainingStates(System.Int32)">
+            <summary>Sets the weight of all states after the `previousIndex` to 0.</summary>
         </member>
-        <member name="M:Animancer.MixerState.GetNextState(System.Int32@)">
-            <summary>
-            Returns the state at the specified `index` if it is not null, otherwise increments the index and checks
-            again. Returns null if no state is found by the end of the <see cref="P:Animancer.MixerState.ChildStates"/>.
-            </summary>
-        </member>
-        <member name="M:Animancer.MixerState.NormalizeWeights(System.Single)">
+        <member name="M:Animancer.ManualMixerState.NormalizeWeights(System.Single)">
             <summary>Divides the weight of all child states by the `totalWeight`.</summary>
             <remarks>
             If the `totalWeight` is equal to the total <see cref="P:Animancer.AnimancerNode.Weight"/> of all child states, then the
             new total will become 1.
             </remarks>
         </member>
-        <member name="M:Animancer.MixerState.GetDisplayKey(Animancer.AnimancerState)">
+        <member name="M:Animancer.ManualMixerState.GetDisplayKey(Animancer.AnimancerState)">
             <summary>Gets a user-friendly key to identify the `state` in the Inspector.</summary>
         </member>
-        <member name="P:Animancer.MixerState.AverageVelocity">
+        <member name="P:Animancer.ManualMixerState.AverageVelocity">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.NormalizeDurations">
+        <member name="M:Animancer.ManualMixerState.NormalizeDurations">
             <summary>
             Recalculates the <see cref="P:Animancer.AnimancerState.Duration"/> of all child states so that they add up to 1.
             </summary>
-            <exception cref="T:System.NullReferenceException">There are any states with no <see cref="P:Animancer.MixerState.Clip"/>.</exception>
+            <exception cref="T:System.NullReferenceException">There are any states with no <see cref="P:Animancer.ManualMixerState.Clip"/>.</exception>
         </member>
-        <member name="F:Animancer.MixerState._IsGeneratedName">
+        <member name="F:Animancer.ManualMixerState._IsGeneratedName">
             <summary>Has the <see cref="P:Animancer.AnimancerNode.DebugName"/> been generated from the child states?</summary>
         </member>
-        <member name="M:Animancer.MixerState.ToString">
+        <member name="M:Animancer.ManualMixerState.ToString">
             <summary>
-            Returns a string describing the type of this mixer and the name of <see cref="P:Animancer.MixerState.Clip"/>s connected to it.
+            Returns a string describing the type of this mixer and the name of <see cref="P:Animancer.ManualMixerState.Clip"/>s connected to it.
             </summary>
         </member>
-        <member name="M:Animancer.MixerState.AppendDetails(System.Text.StringBuilder,System.String)">
+        <member name="M:Animancer.ManualMixerState.AppendDetails(System.Text.StringBuilder,System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.GatherAnimationClips(System.Collections.Generic.ICollection{UnityEngine.AnimationClip})">
+        <member name="M:Animancer.ManualMixerState.GatherAnimationClips(System.Collections.Generic.ICollection{UnityEngine.AnimationClip})">
             <inheritdoc/>
         </member>
-        <member name="P:Animancer.MixerState.ParameterCount">
+        <member name="P:Animancer.ManualMixerState.ParameterCount">
             <summary>The number of parameters being managed by this state.</summary>
         </member>
-        <member name="M:Animancer.MixerState.GetParameterName(System.Int32)">
+        <member name="M:Animancer.ManualMixerState.GetParameterName(System.Int32)">
             <summary>Returns the name of a parameter being managed by this state.</summary>
             <exception cref="T:System.NotSupportedException">This state doesn't manage any parameters.</exception>
         </member>
-        <member name="M:Animancer.MixerState.GetParameterType(System.Int32)">
+        <member name="M:Animancer.ManualMixerState.GetParameterType(System.Int32)">
             <summary>Returns the type of a parameter being managed by this state.</summary>
             <exception cref="T:System.NotSupportedException">This state doesn't manage any parameters.</exception>
         </member>
-        <member name="M:Animancer.MixerState.GetParameterValue(System.Int32)">
+        <member name="M:Animancer.ManualMixerState.GetParameterValue(System.Int32)">
             <summary>Returns the value of a parameter being managed by this state.</summary>
             <exception cref="T:System.NotSupportedException">This state doesn't manage any parameters.</exception>
         </member>
-        <member name="M:Animancer.MixerState.SetParameterValue(System.Int32,System.Object)">
+        <member name="M:Animancer.ManualMixerState.SetParameterValue(System.Int32,System.Object)">
             <summary>Sets the value of a parameter being managed by this state.</summary>
             <exception cref="T:System.NotSupportedException">This state doesn't manage any parameters.</exception>
         </member>
-        <member name="M:Animancer.MixerState.CreateDrawer">
-            <summary>[Editor-Only] Returns a <see cref="T:Animancer.MixerState.Drawer`1"/> for this state.</summary>
+        <member name="M:Animancer.ManualMixerState.CreateDrawer">
+            <summary>[Editor-Only] Returns a <see cref="T:Animancer.ManualMixerState.Drawer`1"/> for this state.</summary>
         </member>
-        <member name="T:Animancer.MixerState.Drawer`1">
+        <member name="T:Animancer.ManualMixerState.Drawer`1">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.Drawer`1.#ctor(`0)">
-            <summary>Creates a new <see cref="T:Animancer.MixerState.Drawer`1"/> to manage the Inspector GUI for the `state`.</summary>
+        <member name="M:Animancer.ManualMixerState.Drawer`1.#ctor(`0)">
+            <summary>Creates a new <see cref="T:Animancer.ManualMixerState.Drawer`1"/> to manage the Inspector GUI for the `state`.</summary>
         </member>
-        <member name="P:Animancer.MixerState.Drawer`1.ParameterCount">
+        <member name="P:Animancer.ManualMixerState.Drawer`1.ParameterCount">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.Drawer`1.GetParameterName(System.Int32)">
+        <member name="M:Animancer.ManualMixerState.Drawer`1.GetParameterName(System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.Drawer`1.GetParameterType(System.Int32)">
+        <member name="M:Animancer.ManualMixerState.Drawer`1.GetParameterType(System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.Drawer`1.GetParameterValue(System.Int32)">
+        <member name="M:Animancer.ManualMixerState.Drawer`1.GetParameterValue(System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState.Drawer`1.SetParameterValue(System.Int32,System.Object)">
+        <member name="M:Animancer.ManualMixerState.Drawer`1.SetParameterValue(System.Int32,System.Object)">
             <inheritdoc/>
         </member>
         <member name="T:Animancer.MixerState`1">
@@ -9400,19 +9638,15 @@
         </member>
         <member name="P:Animancer.MixerState`1.HasThresholds">
             <summary>
-            Indicates whether the array of thresholds has been initialized with a size at least equal to the
-            <see cref="P:Animancer.AnimancerNode.ChildCount"/>.
+            Has the array of thresholds been initialized with a size at least equal to the
+            <see cref="P:Animancer.ManualMixerState.ChildCount"/>.
             </summary>
         </member>
         <member name="M:Animancer.MixerState`1.GetThreshold(System.Int32)">
-            <summary>
-            Returns the value of the threshold associated with the specified index.
-            </summary>
+            <summary>Returns the value of the threshold associated with the specified `index`.</summary>
         </member>
         <member name="M:Animancer.MixerState`1.SetThreshold(System.Int32,`0)">
-            <summary>
-            Sets the value of the threshold associated with the specified index.
-            </summary>
+            <summary>Sets the value of the threshold associated with the specified `index`.</summary>
         </member>
         <member name="M:Animancer.MixerState`1.SetThresholds(`0[])">
             <summary>
@@ -9424,8 +9658,9 @@
         </member>
         <member name="M:Animancer.MixerState`1.ValidateThresholdCount">
             <summary>
-            If the <see cref="P:System.Array.Length"/> of the <see cref="F:Animancer.MixerState`1._Thresholds"/> is not equal to the
-            <see cref="P:Animancer.AnimancerNode.ChildCount"/>, this method assigns a new array of that size and returns true.
+            If the <see cref="P:System.Array.Length"/> of the <see cref="F:Animancer.MixerState`1._Thresholds"/> is below the
+            <see cref="P:Animancer.AnimancerNode.ChildCount"/>, this method assigns a new array with size equal to the
+            <see cref="P:Animancer.ManualMixerState.ChildCapacity"/> and returns true.
             </summary>
         </member>
         <member name="M:Animancer.MixerState`1.OnThresholdsChanged">
@@ -9436,8 +9671,8 @@
         </member>
         <member name="M:Animancer.MixerState`1.CalculateThresholds(System.Func{Animancer.AnimancerState,`0})">
             <summary>
-            Calls `calculate` for each of the <see cref="F:Animancer.ManualMixerState._Children"/> and stores the returned value as
-            the threshold for that state.
+            Calls `calculate` for each of the <see cref="P:Animancer.ManualMixerState.ChildStates"/> and stores the returned value
+            as the threshold for that state.
             </summary>
         </member>
         <member name="M:Animancer.MixerState`1.RecreatePlayable">
@@ -9446,40 +9681,29 @@
             parameter values.
             </summary>
         </member>
-        <member name="M:Animancer.MixerState`1.Initialize(System.Int32)">
+        <member name="M:Animancer.MixerState`1.OnChildCapacityChanged">
             <inheritdoc/>
         </member>
-        <member name="M:Animancer.MixerState`1.Initialize(UnityEngine.AnimationClip[],`0[])">
-            <summary>
-            Initializes the <see cref="T:UnityEngine.Animations.AnimationMixerPlayable"/> and <see cref="F:Animancer.ManualMixerState._Children"/> with one
-            state per clip and assigns the `thresholds`.
-            <para></para>
-            WARNING: if you keep a reference to the `thresholds` array, you must call
-            <see cref="M:Animancer.MixerState`1.OnThresholdsChanged"/> whenever any changes are made to it, otherwise this mixer may not blend
-            correctly.
-            </summary>
-        </member>
-        <member name="M:Animancer.MixerState`1.Initialize(UnityEngine.AnimationClip[],System.Func{Animancer.AnimancerState,`0})">
-            <summary>
-            Initializes the <see cref="T:UnityEngine.Animations.AnimationMixerPlayable"/> and <see cref="F:Animancer.ManualMixerState._Children"/> with one
-            state per clip and assigns the thresholds by calling `calculateThreshold` for each state.
-            </summary>
-        </member>
-        <member name="M:Animancer.MixerState`1.CreateChild(System.Int32,UnityEngine.AnimationClip,`0)">
-            <summary>
-            Creates and returns a new <see cref="T:Animancer.ClipState"/> to play the `clip` with this
-            <see cref="T:Animancer.MixerState"/> as its parent, connects it to the specified `index`, and assigns the
-            `threshold` for it.
-            </summary>
-        </member>
-        <member name="M:Animancer.MixerState`1.CreateChild(System.Int32,Animancer.ITransition,`0)">
-            <summary>
-            Calls <see cref="M:Animancer.AnimancerUtilities.CreateStateAndApply(Animancer.ITransition,Animancer.AnimancerPlayable)"/>, sets this mixer as the state's parent, and
-            assigns the `threshold` for it.
-            </summary>
-        </member>
-        <member name="M:Animancer.MixerState`1.SetChild(System.Int32,Animancer.AnimancerState,`0)">
+        <member name="M:Animancer.MixerState`1.Add(Animancer.AnimancerState,`0)">
             <summary>Assigns the `state` as a child of this mixer and assigns the `threshold` for it.</summary>
+        </member>
+        <member name="M:Animancer.MixerState`1.Add(UnityEngine.AnimationClip,`0)">
+            <summary>
+            Creates and returns a new <see cref="T:Animancer.ClipState"/> to play the `clip` as a child of this mixer, and assigns
+            the `threshold` for it.
+            </summary>
+        </member>
+        <member name="M:Animancer.MixerState`1.Add(Animancer.ITransition,`0)">
+            <summary>
+            Calls <see cref="M:Animancer.AnimancerUtilities.CreateStateAndApply(Animancer.ITransition,Animancer.AnimancerPlayable)"/> then 
+            <see cref="M:Animancer.MixerState`1.Add(Animancer.AnimancerState,`0)"/>.
+            </summary>
+        </member>
+        <member name="M:Animancer.MixerState`1.Add(System.Object,`0)">
+            <summary>Calls one of the other <see cref="M:Animancer.MixerState`1.Add(System.Object,`0)"/> overloads as appropriate.</summary>
+        </member>
+        <member name="M:Animancer.MixerState`1.Animancer#ICopyable{Animancer#MixerState{TParameter}}#CopyFrom(Animancer.MixerState{`0})">
+            <inheritdoc/>
         </member>
         <member name="M:Animancer.MixerState`1.GetDisplayKey(Animancer.AnimancerState)">
             <inheritdoc/>
